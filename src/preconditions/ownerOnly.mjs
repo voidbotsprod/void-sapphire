@@ -1,7 +1,7 @@
-const { Precondition } = require("@sapphire/framework");
+import { Precondition } from "@sapphire/framework";
 const OWNERS = process.env.OWNERS.split(",");
 
-class ownerOnly extends Precondition {
+export class ownerOnly extends Precondition {
     isOwner(message, input, type) {
         if (type == "messageRun") return input.includes(message.author.id)
         if (type == "chatInputRun") return input.includes(message.user.id)
@@ -19,5 +19,3 @@ class ownerOnly extends Precondition {
             : this.error({ message: "Only the bot owner can use this command.", context: { silent: true } })
     }
 }
-
-module.exports = { ownerOnly };

@@ -1,7 +1,7 @@
-const { Command, RegisterBehavior, CommandOptionsRunTypeEnum } = require('@sapphire/framework');
-const { isMessageInstance } = require("@sapphire/discord.js-utilities")
+import { Command, RegisterBehavior, CommandOptionsRunTypeEnum } from '@sapphire/framework';
+import { isMessageInstance } from "@sapphire/discord.js-utilities";
 
-class Ping extends Command {
+export class Ping extends Command {
     constructor(context, options) {
         super(context, {
             ...options,
@@ -42,5 +42,3 @@ class Ping extends Command {
         return await interaction.reply({ content: "Failed to retrieve ping!" });
     }
 }
-
-module.exports = { Ping };

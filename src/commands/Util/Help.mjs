@@ -1,9 +1,10 @@
-const { MessageEmbed } = require("discord.js");
-const { Command, CommandOptionsRunTypeEnum, RegisterBehavior } = require('@sapphire/framework');
-const { PASTEL_GREEN } = require("../../lib/shared/colors.json")
-const { capitalize } = require("../../lib/shared/functions.js")
+import { Command, CommandOptionsRunTypeEnum, RegisterBehavior } from '@sapphire/framework';
+import { colors } from "../../lib/shared/colors.mjs";
+import { capitalize } from "../../lib/shared/functions.mjs";
 
-class Help extends Command {
+import { MessageEmbed } from "discord.js";
+
+export class Help extends Command {
     constructor(context, options) {
         super(context, {
             ...options,
@@ -32,7 +33,7 @@ class Help extends Command {
         const successEmbed = new MessageEmbed()
             .setTitle(`Search Result | ${command.name}`)
             .setDescription(`**Name:** ${command.name}\n**Description:** \`${command.description}\``)
-            .setColor(PASTEL_GREEN)
+            .setColor(colors.PASTEL_GREEN)
 
         return await interaction.reply({ embeds: [successEmbed], ephemeral: true })
     }
@@ -58,5 +59,3 @@ class Help extends Command {
     }
 
 }
-
-module.exports = { Help };

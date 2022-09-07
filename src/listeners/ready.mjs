@@ -1,6 +1,6 @@
-const { Listener } = require("@sapphire/framework");
+import { Listener } from "@sapphire/framework";
 
-class Ready extends Listener {
+export class Ready extends Listener {
     constructor(context, options) {
         super(context, {
             ...options,
@@ -18,5 +18,3 @@ class Ready extends Listener {
         /* await client.application.commands.set([]) */
     }
 }
-
-module.exports = { Ready };

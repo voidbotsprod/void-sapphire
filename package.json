@@ -1,12 +1,13 @@
 {
-  "name": "sapp",
+  "name": "void",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.js",
+  "type": "module",
+  "main": "src/index.mjs",
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.mjs"
   },
-  "author": "BluePotatoBP",
+  "author": "BluePotatoBP, Xavons, JBTech",
   "license": "ISC",
   "dependencies": {
     "@sapphire/framework": "^3.1.1",

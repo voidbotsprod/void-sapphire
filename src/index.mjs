@@ -1,6 +1,6 @@
-require("dotenv").config();
-const { SapphireClient, BucketScope, LogLevel } = require('@sapphire/framework');
-const { Time } = require('@sapphire/time-utilities');
+import "dotenv/config";
+import { SapphireClient, BucketScope, LogLevel } from "@sapphire/framework";
+import { Time } from "@sapphire/time-utilities";
 
 const client = new SapphireClient({
     intents: ['GUILDS', "GUILD_MESSAGES", "GUILD_MEMBERS"],

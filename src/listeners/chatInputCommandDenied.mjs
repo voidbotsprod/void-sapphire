@@ -1,6 +1,6 @@
-const { Listener } = require('@sapphire/framework');
+import { Listener } from '@sapphire/framework';
 
-class chatInputCommandDenied extends Listener {
+export class chatInputCommandDenied extends Listener {
     constructor(context, options) {
         super(context, {
             ...options,
@@ -15,5 +15,3 @@ class chatInputCommandDenied extends Listener {
         return;
     }
 }
-
-module.exports = { chatInputCommandDenied };

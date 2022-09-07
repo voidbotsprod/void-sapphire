@@ -1,6 +1,6 @@
-const { Command, RegisterBehavior, CommandOptionsRunTypeEnum } = require('@sapphire/framework');
+import { Command, RegisterBehavior, CommandOptionsRunTypeEnum } from '@sapphire/framework';
 
-class Say extends Command {
+export class Say extends Command {
     constructor(context, options) {
         super(context, {
             ...options,
@@ -39,5 +39,3 @@ class Say extends Command {
         return await interaction.reply({ content: text })
     }
 }
-
-module.exports = { Say };

@@ -1,4 +1,4 @@
-{
+export const colors = {
     "PASTEL_GREEN": "#87de7f",
     "CHERRY_RED": "#8e3741"
 }
