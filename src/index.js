@@ -13,15 +13,22 @@ const client = new SapphireClient({
         filteredUsers: process.env.OWNERS.split(',',),
         scope: BucketScope.User
     },
+    shards: 'auto',
     logger: { level: LogLevel.Info },
     allowedMentions: { repliedUser: true },
+    partials: ['CHANNEL'],
 });
 
 global.client = client;
 
 container.color = {
-    "PASTEL_GREEN": "#87de7f",
-    "CHERRY_RED": "#8e3741"
+    PASTEL_GREEN: 0x87de7f,
+    CHERRY_RED: 0x8e3741,
+    BLURPLE: 0x5865F2,
+	BLURPLE_CLASSIC: 0x7289DA,
+	GREYPLE: 0x99AAB5,
+	DARK_BUT_NOT_BLACK: 0x2C2F33,
+	NOT_QUITE_BLACK: 0x23272A
 }
 
 const main = async () => {
