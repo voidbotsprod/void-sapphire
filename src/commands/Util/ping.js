@@ -28,8 +28,12 @@ export class Ping extends Command {
 
     // Run the slash command
     async chatInputRun(interaction) {
-        // Send initial message
-        const msg = await interaction.reply({ content: "Doing funny stuff...", fetchReply: true }).catch(() => { });
+        // Send initial message and fetch it so we can access the msg
+        const msg = await interaction.reply({
+            content: "Doing funny stuff...",
+            fetchReply: true
+        }).catch(() => { });
+
         // Check if the interaction is a message and not apimessage
         if (isMessageInstance(msg)) {
             const clientPing = Math.round(await client.ws.ping);
@@ -38,6 +42,7 @@ export class Ping extends Command {
 
             return await interaction.editReply({ content: formatted }).catch(() => { });
         }
+
         // If the interaction is not a message, return error message
         return await interaction.reply({ content: "Failed to retrieve ping!" });
     }
