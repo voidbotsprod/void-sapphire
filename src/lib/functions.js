@@ -1,5 +1,5 @@
 import { RandomLoadingMessage } from '#lib/constants';
-import { send } from '@sapphire/plugin-editable-commands';
+import { container } from '@sapphire/framework';
 import { MessageEmbed } from 'discord.js';
 
 /**
@@ -15,8 +15,8 @@ export function cutTo(input = 'error', from = 0, to = 250, ending = true) {
     if (input.length > to) {
         let output = input.substring(from, to);
         return ending ? (output += '...') : output;
-    } else { 
-        return input; 
+    } else {
+        return input;
     }
 }
 
@@ -47,13 +47,19 @@ export function capitalize(string) {
  * @return a random item
  */
 export function pickRandom(array) {
-	return array[Math.floor(Math.random() * array.length)];
+    return array[Math.floor(Math.random() * array.length)];
 }
 
 /**
  * Sends a random loading message, which are defined in `#lib/constants`.
  * @param Message The message to send the random response with.
  */
-export function sendLoadingMessage(message) {
-	return send(message, { embeds: [new MessageEmbed().setDescription(pickRandom(RandomLoadingMessage)).setColor('#FF0000')] });
+export function sendLoadingMessage(interaction) {
+
+    return interaction.reply({
+        content: 'Successfully unregistered all **guild** application commands.\nYou will need to update the idHints after the next start.',
+        embeds: [new MessageEmbed().setDescription(pickRandom(RandomLoadingMessage)).setColor(container.color.GREYPLE)],
+        ephemeral: true,
+        fetchReply: false
+    });
 }
