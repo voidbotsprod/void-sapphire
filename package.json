@@ -10,7 +10,9 @@
   },
   "author": "BluePotatoBP, Xavons, JBTech",
   "license": "ISC",
-
+  "imports": {
+    "#lib/*": "./src/lib/*.js"
+  },
   "dependencies": {
     "@sapphire/framework": "next",
     "@sapphire/discord-utilities": "next",
