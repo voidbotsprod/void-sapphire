@@ -1,7 +1,7 @@
-import { Command, RegisterBehavior, CommandOptionsRunTypeEnum } from '@sapphire/framework';
+import { Command } from '@sapphire/framework';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { Time } from '@sapphire/time-utilities';
-import { codeBlock, isThenable, regExpEsc } from '@sapphire/utilities';
+import { codeBlock, isThenable } from '@sapphire/utilities';
 import { inspect } from 'node:util';
 import { PasteGG } from "paste.gg";
 
