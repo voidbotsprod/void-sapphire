@@ -1,6 +1,6 @@
 import { Command, CommandOptionsRunTypeEnum, RegisterBehavior } from '@sapphire/framework';
-import { colors } from "../../lib/shared/colors.mjs";
-import { capitalize } from "../../lib/shared/functions.mjs";
+import { colors } from "../../lib/shared/colors.js";
+import { capitalize } from "../../lib/shared/functions.js";
 
 import { MessageEmbed } from "discord.js";
 

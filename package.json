@@ -3,16 +3,30 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "main": "src/index.mjs",
+  "main": "src/index.js",
   "scripts": {
-    "dev": "nodemon index.mjs"
+    "dev": "nodemon --enable-source-maps --experimental-json-modules -L --watch src",
+    "start": "node --enable-source-maps --experimental-json-modules src/index.js"
   },
   "author": "BluePotatoBP, Xavons, JBTech",
   "license": "ISC",
+
   "dependencies": {
-    "@sapphire/framework": "^3.1.1",
+    "@sapphire/framework": "next",
+    "@sapphire/discord-utilities": "next",
+    "@sapphire/discord.js-utilities": "next",
+    "@sapphire/fetch": "^2.4.1",
+    "@sapphire/plugin-api": "next",
+    "@sapphire/plugin-editable-commands": "^2.0.2-next.de79724.0",
+    "@sapphire/plugin-logger": "next",
+    "@sapphire/plugin-subcommands": "^3.2.2-next.c247799.0",
+    "@sapphire/time-utilities": "^1.7.5",
     "discord.js": "^13.10.3",
     "dotenv": "^16.0.1",
-    "nodemon": "^2.0.16"
+    "paste.gg": "^1.0.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19",
+    "npm-run-all": "^4.1.5"
   }
 }
