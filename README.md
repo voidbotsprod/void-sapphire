@@ -9,13 +9,13 @@ BOT is a Discord bot written in JS using [Discord.JS](https://discord.js.org/#/)
 Clone the project
 
 ```bash
-  git clone https://github.com/BluePotatoBP/sapphire-bot-temp-name
+  git clone https://github.com/voidbotsprod/void-sapphire
 ```
 
 Go to the project directory
 
 ```bash
-  cd sapphire-bot-temp-name
+  cd void-sapphire
 ```
 
 Install dependencies
