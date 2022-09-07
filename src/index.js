@@ -1,5 +1,5 @@
 import '#lib/setup';
-import { LogLevel, SapphireClient, BucketScope } from '@sapphire/framework';
+import { container, LogLevel, SapphireClient, BucketScope } from '@sapphire/framework';
 import { Time } from "@sapphire/time-utilities";
 
 const client = new SapphireClient({
@@ -14,7 +14,7 @@ const client = new SapphireClient({
     allowedMentions: { repliedUser: true },
 });
 
-client.color = {
+container.color = {
     "PASTEL_GREEN": "#87de7f",
     "CHERRY_RED": "#8e3741"
 }
