@@ -1,5 +1,5 @@
-import "dotenv/config";
-import { SapphireClient, BucketScope, LogLevel } from "@sapphire/framework";
+import '#lib/setup';
+import { LogLevel, SapphireClient, BucketScope } from '@sapphire/framework';
 import { Time } from "@sapphire/time-utilities";
 
 const client = new SapphireClient({
@@ -13,6 +13,11 @@ const client = new SapphireClient({
     logger: { level: LogLevel.Info },
     allowedMentions: { repliedUser: true },
 });
+
+client.colors = {
+    "PASTEL_GREEN": "#87de7f",
+    "CHERRY_RED": "#8e3741"
+}
 
 client.login();
 
