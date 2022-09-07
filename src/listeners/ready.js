@@ -15,6 +15,6 @@ export class Ready extends Listener {
         console.log("----------------------")
         this.container.logger.info(`Logged in as ${username} [${id}]`)
         // vvv used to reset all slash commands if required
-        /* await client.application.commands.set([]) */
+        // await client.application.commands.set([])
     }
 }
