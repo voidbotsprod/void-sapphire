@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import '@sapphire/plugin-editable-commands/register';
+import '@sapphire/plugin-api/register';
 import '@sapphire/plugin-logger/register';
 import { createColors } from 'colorette';
 import { inspect } from 'node:util';
