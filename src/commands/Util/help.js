@@ -12,7 +12,7 @@ export class Help extends Command {
             runIn: CommandOptionsRunTypeEnum.GuildText,
             chatInputCommand: {
                 behaviourWhenNotIdentical: RegisterBehavior.Overwrite,
-                idHints: ["1017091653837803632"],
+                idHints: ["1017143176219328602"],
                 guildIds: ["975124858298040451"],
             }
         });

@@ -49,7 +49,7 @@ export class UserCommand extends Subcommand {
                 .addSubcommand((command) => command.setName('guild').setDescription('Unregister all guild application commands.'))
         }, {
             guildIds: ['975124858298040451'], // guilds for the command to be registered in; global if empty
-            idHints: '1017141861615423558', // commandId, define after registering (id will be in log after first run)
+            idHints: '1017143174558392340', // commandId, define after registering (id will be in log after first run)
         })
     }
 
@@ -61,9 +61,9 @@ export class UserCommand extends Subcommand {
             .catch(console.error);
 
         return interaction.reply({
-            content: 'Successfully unregistered **all** application commands.',
+            content: 'Successfully unregistered **all** application commands.\nYou will need to update the idHints after the next start.',
             embeds: [],
-            ephemeral: false,
+            ephemeral: true,
             fetchReply: false
         });
     }
@@ -73,9 +73,9 @@ export class UserCommand extends Subcommand {
             .catch(console.error);
 
         return interaction.reply({
-            content: 'Successfully unregistered all **global** application commands.',
+            content: 'Successfully unregistered all **global** application commands.\nYou will need to update the idHints after the next start.',
             embeds: [],
-            ephemeral: false,
+            ephemeral: true,
             fetchReply: false
         });
     }
@@ -86,9 +86,9 @@ export class UserCommand extends Subcommand {
 
 
         return interaction.reply({
-            content: 'Successfully unregistered all **guild** application commands.',
+            content: 'Successfully unregistered all **guild** application commands.\nYou will need to update the idHints after the next start.',
             embeds: [],
-            ephemeral: false,
+            ephemeral: true,
             fetchReply: false
         });
     }

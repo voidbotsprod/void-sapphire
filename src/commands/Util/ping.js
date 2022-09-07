@@ -12,7 +12,7 @@ export class Ping extends Command {
             chatInputCommand: {
                 /* register: true, */
                 behaviorWhenNotIdentical: RegisterBehavior.Overwrite,
-                idHints: ["1017091655662309480"],
+                idHints: ["1017143180606578698"],
                 guildIds: ["975124858298040451"]
             }
         });

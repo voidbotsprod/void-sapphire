@@ -12,7 +12,7 @@ export class Say extends Command {
             chatInputCommand: {
                 /* register: true, */
                 behaviorWhenNotIdentical: RegisterBehavior.Overwrite,
-                idHints: ["1017091656807362581"],
+                idHints: ["1017143182309474334"],
                 guildIds: ["975124858298040451"],
             },
         });
