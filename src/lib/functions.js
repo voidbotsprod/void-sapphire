@@ -2,23 +2,30 @@ import { RandomLoadingMessage } from '#lib/constants';
 import { send } from '@sapphire/plugin-editable-commands';
 import { MessageEmbed } from 'discord.js';
 
-// TODO: add jsdoc
+/**
+ * 
+ * @param {string} input Input string
+ * @param {number} from Start index
+ * @param {number} to End index
+ * @param {boolean} ending Should the string end with '...'?
+ * @returns Formatted string
+ */
 export function cutTo(input = 'error', from = 0, to = 250, ending = true) {
     /* NOTE: Does not check for ' '(spaces) */
     if (input.length > to) {
         let output = input.substring(from, to);
-        if (ending) {
-            return output + '...';
-        } else {
-            return output;
-        }
-    } else {
-        //input = s;
-        return input;
+        return ending ? (output += '...') : output;
+    } else { 
+        return input; 
     }
 }
 
-// TODO: add jsdoc
+/**
+ * 
+ * @param {string} input String to be wrapped
+ * @param {number} length Length of each line
+ * @returns Wrapped string
+ */
 export function softWrap(input, length = 30) {
     const wrap = input.replace(new RegExp(`(?![^\\n]{1,${length}}$)([^\\n]{1,${length}})\\s`, 'g'), '$1\n');
 
