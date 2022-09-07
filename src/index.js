@@ -14,7 +14,7 @@ const client = new SapphireClient({
     allowedMentions: { repliedUser: true },
 });
 
-client.colors = {
+client.color = {
     "PASTEL_GREEN": "#87de7f",
     "CHERRY_RED": "#8e3741"
 }

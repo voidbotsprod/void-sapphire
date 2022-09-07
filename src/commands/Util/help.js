@@ -1,6 +1,5 @@
 import { Command, CommandOptionsRunTypeEnum, RegisterBehavior } from '@sapphire/framework';
-import { colors } from "../../lib/shared/colors.js";
-import { capitalize } from "../../lib/shared/functions.js";
+import { capitalize } from '#lib/functions';
 
 import { MessageEmbed } from "discord.js";
 
@@ -33,7 +32,7 @@ export class Help extends Command {
         const successEmbed = new MessageEmbed()
             .setTitle(`Search Result | ${command.name}`)
             .setDescription(`**Name:** ${command.name}\n**Description:** \`${command.description}\``)
-            .setColor(colors.PASTEL_GREEN)
+            .setColor(this.container.color.PASTEL_GREEN)
 
         return await interaction.reply({ embeds: [successEmbed], ephemeral: true })
     }
