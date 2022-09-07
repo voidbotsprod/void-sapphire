@@ -37,7 +37,7 @@ export class Eval extends Command {
     async chatInputRun(interaction) {
         let code = interaction.options.getString("code", true);
 
-        const { success, result, time, thenable } = await this.eval(code, false);
+        const { success, result, time, thenable } = await this.eval(code, interaction, false);
 
         if (success) {
             if (thenable) {
@@ -48,7 +48,7 @@ export class Eval extends Command {
         return interaction.reply({ content: `${result.length > 2000 ? await this.getPaste(result, code).catch((err) => codeBlock('js', err)) : codeBlock('js', result)}\n${time}` });
     }
 
-    async eval(code, async) {
+    async eval(code, interaction, async) {
         let success;
         let syncTime;
         let asyncTime;
