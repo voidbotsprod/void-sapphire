@@ -1,6 +1,12 @@
-import { methods, Route } from '@sapphire/plugin-api';
-
+import { HttpCodes, methods, Route } from '@sapphire/plugin-api';
+import { Time } from '@sapphire/time-utilities';
+import { RateLimitManager } from '@sapphire/ratelimits';
+import { isRateLimited } from '#lib/functions';
 export class MainRoute extends Route {
+	rateLimitTime = Time.Second * 5;
+	
+	rateLimitManager = new RateLimitManager(Time.Second * 5, 1);
+	
 	constructor(context, options) {
 		super(context, {
 			...options,
@@ -8,15 +14,18 @@ export class MainRoute extends Route {
 		});
 	}
 
-	[methods.GET](_request, response) {
-		response.json({
-			message: 'Landing Page!'
-		});
-	}
+	[methods.GET](request, response) {
+		const BASE_URL = 'http://localhost:4000';
 
-	[methods.POST](_request, response) {
+		if (isRateLimited({
+				time: this.rateLimitTime,
+				request,
+				response,
+				manager: this.rateLimitManager
+		})) return response.error(HttpCodes.TooManyRequests);
+
 		response.json({
-			message: 'Landing Page!'
+			"current_location": BASE_URL
 		});
 	}
 }
