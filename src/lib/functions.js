@@ -1,6 +1,7 @@
 import { RandomLoadingMessage } from '#lib/constants';
 import { container } from '@sapphire/framework';
 import { MessageEmbed } from 'discord.js';
+import { isNullish, isNullishOrZero } from '@sapphire/utilities';
 
 /**
  * 
@@ -63,3 +64,28 @@ export function sendLoadingMessage(interaction) {
         fetchReply: false
     });
 }
+
+/**
+ * Checks whether a user should be rate limited.
+ * @param param0 The parameters for this function
+ * @returns `true` if the user should be rate limited, `false` otherwise
+ */
+ export function isRateLimited({ time, request, response, manager, auth = false }) {
+    if (isNullishOrZero(time) || isNullish(request) || isNullish(response) || isNullish(manager)) {
+      return false;
+    }
+    const id = auth ? request.auth.id : request.headers['x-api-key'] || request.socket.remoteAddress;
+    const bucket = manager.acquire(id);
+    response.setHeader('Date', new Date().toUTCString());
+    response.setHeader('X-RateLimit-Limit', time);
+    response.setHeader('X-RateLimit-Remaining', bucket.remaining.toString());
+    response.setHeader('X-RateLimit-Reset', bucket.remainingTime.toString());
+    if (bucket.limited) {
+      response.setHeader('Retry-After', bucket.remainingTime.toString());
+      return true;
+    }
+    try {
+      bucket.consume();
+    } catch {}
+    return false;
+  }
