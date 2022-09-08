@@ -37,6 +37,7 @@ export class Eval extends Command {
     async chatInputRun(interaction) {
         let code = interaction.options.getString("code", true);
 
+        // TODO: add --async flag
         const { success, result, time, thenable } = await this.eval(code, interaction, false);
 
         if (success) {

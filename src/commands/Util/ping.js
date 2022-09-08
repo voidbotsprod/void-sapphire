@@ -19,7 +19,7 @@ export class Ping extends Command {
                 .setDescription(this.description)
         }, {
             guildIds: ['975124858298040451'], // guilds for the command to be registered in; global if empty
-            idHints: '1017143180606578698', // commandId, define after registering (id will be in log after first run)
+            idHints: '1017336633181351937', // commandId, define after registering (id will be in log after first run)
         })
     }
 

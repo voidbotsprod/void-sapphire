@@ -31,7 +31,7 @@ export class Help extends Command {
                 })
         }, {
             guildIds: ['975124858298040451'], // guilds for the command to be registered in; global if empty
-            idHints: '1017143176219328602', // commandId, define after registering (id will be in log after first run)
+            idHints: '1017336631163895808', // commandId, define after registering (id will be in log after first run)
         })
     }
 
