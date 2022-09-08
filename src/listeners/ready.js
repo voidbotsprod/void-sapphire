@@ -18,29 +18,17 @@ export class UserEvent extends Listener {
         this.printStoreDebugInformation();
     }
 
-    
     /**
      * Prints a magenta (DEVELOPMENT) or blue (PRODUCTION) info banner depending on the NODE_ENV.
     */
     printBanner() {
-        const success = green('+');
-
         const llc = dev ? magentaBright : white;
         const blc = dev ? magenta : blue;
 
-        const line01 = llc('');
-        const line02 = llc('');
-        const line03 = llc('');
-
-        // Offset Pad
-        const pad = ' '.repeat(7);
-
-        console.log(
-            String.raw`
-${line01} ${pad}${blc(process.env.VERSION)}
-${line02} ${pad}[${success}] Gateway
-${line03}${dev ? ` ${pad}${blc('<')}${llc('/')}${blc('>')} ${llc(`${process.env.NODE_ENV} MODE`)}` : ''}
-		`.trim()
+        client.logger.info( // is there a better way to do this?
+            String.raw`Gateway online
+${dev ? `${blc('<') + llc('/') + blc('>') + llc(` ${process.env.NODE_ENV} ENVIRONMENT`)}` : 'PRODUCTION ENVIRONMENT'}
+${llc(`v${process.env.VERSION}`)}`
         );
     }
 
