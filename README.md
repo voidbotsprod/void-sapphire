@@ -1,7 +1,7 @@
 
-# Sapphire Bot 
+<h2>VOID</h2>
 
-BOT is a Discord bot written in JS using [Discord.JS](https://discord.js.org/#/) and [Sapphire](https://www.sapphirejs.dev/)
+VOID is a Discord bot written in JS using [Discord.JS](https://discord.js.org/#/) and [Sapphire](https://www.sapphirejs.dev/)
 
 
 ## Run Locally
@@ -38,6 +38,10 @@ To run the bot, you will need to create a .env file with the following environme
 `DISCORD_TOKEN=TOKEN`
 
 `OWNERS=ID` (if theres multiple owners separate with ,)
+
+`NODE_ENV=DEVELOPMENT/PRODUCTION`
+
+`VERSION=1.0.0`
 
 
 ## Feedback/Support
