@@ -10,7 +10,7 @@ export class Eval extends Command {
         super(context, {
             ...options,
             name: 'eval',
-            aliases: ['e', 'ev'],
+            /* aliases: ['e', 'ev'], */ // aliases are not supported for slash commands
             description: 'Evaluate code.',
             preconditions: ["ownerOnly"]
         });
@@ -21,6 +21,12 @@ export class Eval extends Command {
             builder
                 .setName(this.name)
                 .setDescription(this.description)
+                .addBooleanOption((option) =>
+                    option
+                        .setName("async")
+                        .setDescription("Whether the code should be evaluated asynchronously.")
+                        .setRequired(true)
+                )
                 .addStringOption((option) =>
                     option
                         .setName("code")
@@ -35,16 +41,11 @@ export class Eval extends Command {
 
     // Run the slash command
     async chatInputRun(interaction) {
-        let code = interaction.options.getString("code", true);
+        const code = interaction.options.getString("code", true);
+        const async = interaction.options.getBoolean("async", false);
+        const { success, time, result, thenable } = await this.eval(code, interaction, async);
 
-        // TODO: add --async flag
-        const { success, result, time, thenable } = await this.eval(code, interaction, false);
-
-        if (success) {
-            if (thenable) {
-                return result;
-            }
-        }
+        if (success && thenable) return result;
 
         return interaction.reply({ content: `${result.length > 2000 ? await this.getPaste(result, code).catch((err) => codeBlock('js', err)) : codeBlock('js', result)}\n${time}` });
     }
@@ -63,27 +64,34 @@ export class Eval extends Command {
             result = eval(code);
             syncTime = stopwatch.toString();
 
+            if (typeof result !== 'string') {
+                result = result instanceof Error ? result.stack : inspect(result, { depth: 0 });
+            }
+
             if (isThenable(result)) {
                 thenable = true;
                 stopwatch.restart();
-                result = await result;
                 asyncTime = stopwatch.toString();
             }
 
+            stopwatch.stop();
             success = true;
+
         } catch (error) {
             if (!syncTime) syncTime = stopwatch.toString();
             if (thenable && !asyncTime) asyncTime = stopwatch.toString();
             result = error.toString();
+
             success = false;
+            stopwatch.stop();
         }
 
-        stopwatch.stop();
-        if (typeof result !== 'string') {
-            result = result instanceof Error ? result.stack : inspect(result, { depth: 0 });
-        }
-
-        return { success, time: this.formatTime(syncTime, asyncTime ?? ''), result: result, thenable };
+        return {
+            success,
+            time: this.formatTime(syncTime, asyncTime ?? ''),
+            result: result,
+            thenable
+        };
     }
 
     formatTime(syncTime, asyncTime) {
@@ -107,9 +115,7 @@ export class Eval extends Command {
                 }]
             })
 
-            if (paste.status == 'error') {
-                return `\n${paste.message}`
-            }
+            if (paste.status == 'error') return `\n${paste.message}`
 
             return `\n${paste.result.url}`
         } catch (err) {
