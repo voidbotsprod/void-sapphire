@@ -1,13 +1,11 @@
-import { Command, RegisterBehavior, CommandOptionsRunTypeEnum } from '@sapphire/framework';
+import { Command, CommandOptionsRunTypeEnum } from '@sapphire/framework';
 import { isMessageInstance } from "@sapphire/discord.js-utilities";
-
 export class Ping extends Command {
     constructor(context, options) {
         super(context, {
             ...options,
             name: 'Ping',
             description: 'Calculates the round trip and bot to api latency.',
-            preconditions: ["ownerOnly"],
             runIn: CommandOptionsRunTypeEnum.GuildText
         });
     }

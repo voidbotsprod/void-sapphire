@@ -7,7 +7,6 @@ export class Say extends Command {
             name: 'say',
             aliases: ['echo', 's'],
             description: 'Sends text.',
-            preconditions: ["ownerOnly"],
             runIn: CommandOptionsRunTypeEnum.GuildText
         });
     }
