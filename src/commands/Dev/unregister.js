@@ -32,8 +32,7 @@ export class UserCommand extends Subcommand {
                 },
                 {
                     name: 'all',
-                    chatInputRun: 'chatInputRunAll',
-                    default: true
+                    chatInputRun: 'chatInputRunAll'
                 }
             ]
         });

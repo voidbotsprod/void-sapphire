@@ -9,13 +9,30 @@ export class Help extends Command {
             ...options,
             name: 'Help',
             description: 'Shows additional information about commands.',
-            runIn: CommandOptionsRunTypeEnum.GuildText,
-            chatInputCommand: {
-                behaviourWhenNotIdentical: RegisterBehavior.Overwrite,
-                idHints: ["1017143176219328602"],
-                guildIds: ["975124858298040451"],
-            }
+            runIn: CommandOptionsRunTypeEnum.GuildText
         });
+    }
+
+    registerApplicationCommands(registry) {
+        registry.registerChatInputCommand((builder) => {
+            builder
+                .setName(this.name)
+                .setDescription(this.description)
+                .addStringOption(option => {
+                    option
+                        .setName("search")
+                        .setDescription("Get information about a command.")
+                        .setRequired(true)
+
+                    this.container.stores.get("commands").forEach(c => {
+                        option.addChoices({ name: capitalize(c.name), value: c.name });
+                    });
+                    return option;
+                })
+        }, {
+            guildIds: ['975124858298040451'], // guilds for the command to be registered in; global if empty
+            idHints: '1017143176219328602', // commandId, define after registering (id will be in log after first run)
+        })
     }
 
     // Checking if the user wants to search for a command, if not, list all commands
@@ -36,25 +53,4 @@ export class Help extends Command {
 
         return await interaction.reply({ embeds: [successEmbed], ephemeral: true })
     }
-
-    registerApplicationCommands(registry) {
-        registry.registerChatInputCommand((builder) => {
-            builder
-                .setName(this.name)
-                .setDescription(this.description)
-                .addStringOption(option => {
-                    option
-                        .setName("search")
-                        .setDescription("Get information about a command.")
-                        .setRequired(true)
-
-                    // Get all command names and put them in an array
-                    this.container.stores.get("commands").forEach(c => {
-                        option.addChoices({ name: capitalize(c.name), value: c.name });
-                    });
-                    return option;
-                })
-        })
-    }
-
 }

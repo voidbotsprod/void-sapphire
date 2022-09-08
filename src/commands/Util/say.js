@@ -1,4 +1,4 @@
-import { Command, RegisterBehavior, CommandOptionsRunTypeEnum } from '@sapphire/framework';
+import { Command, CommandOptionsRunTypeEnum } from '@sapphire/framework';
 
 export class Say extends Command {
     constructor(context, options) {
@@ -6,15 +6,9 @@ export class Say extends Command {
             ...options,
             name: 'say',
             aliases: ['echo', 's'],
-            description: 'say funny stuff',
+            description: 'Sends text.',
             preconditions: ["ownerOnly"],
-            runIn: CommandOptionsRunTypeEnum.GuildText,
-            chatInputCommand: {
-                /* register: true, */
-                behaviorWhenNotIdentical: RegisterBehavior.Overwrite,
-                idHints: ["1017143182309474334"],
-                guildIds: ["975124858298040451"],
-            },
+            runIn: CommandOptionsRunTypeEnum.GuildText
         });
     }
 
@@ -26,10 +20,13 @@ export class Say extends Command {
                 .addStringOption((option) =>
                     option
                         .setName("text")
-                        .setDescription("The text to say")
+                        .setDescription("The text to send.")
                         .setRequired(true)
                 )
-        });
+        }, {
+            guildIds: ['975124858298040451'], // guilds for the command to be registered in; global if empty
+            idHints: '1017143182309474334', // commandId, define after registering (id will be in log after first run)
+        })
     }
 
     // Run the slash command

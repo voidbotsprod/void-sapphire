@@ -8,13 +8,7 @@ export class Ping extends Command {
             name: 'Ping',
             description: 'Calculates the round trip and bot to api latency.',
             preconditions: ["ownerOnly"],
-            runIn: CommandOptionsRunTypeEnum.GuildText,
-            chatInputCommand: {
-                /* register: true, */
-                behaviorWhenNotIdentical: RegisterBehavior.Overwrite,
-                idHints: ["1017143180606578698"],
-                guildIds: ["975124858298040451"]
-            }
+            runIn: CommandOptionsRunTypeEnum.GuildText
         });
     }
 
@@ -23,18 +17,20 @@ export class Ping extends Command {
             builder
                 .setName(this.name)
                 .setDescription(this.description)
-        });
+        }, {
+            guildIds: ['975124858298040451'], // guilds for the command to be registered in; global if empty
+            idHints: '1017143180606578698', // commandId, define after registering (id will be in log after first run)
+        })
     }
 
-    // Run the slash command
     async chatInputRun(interaction) {
-        // Send initial message and fetch it so we can access the msg
+        // Send initial message and fetch it so we can access the sent message.
         const msg = await interaction.reply({
             content: "Doing funny stuff...",
             fetchReply: true
         }).catch(() => { });
 
-        // Check if the interaction is a message and not apimessage
+        // Check if the interaction is a message and not an APImessage
         if (isMessageInstance(msg)) {
             const clientPing = Math.round(await client.ws.ping);
             const rtPing = await msg.createdTimestamp - await interaction.createdTimestamp
