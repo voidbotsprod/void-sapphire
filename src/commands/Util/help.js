@@ -1,4 +1,5 @@
-import { Command, CommandOptionsRunTypeEnum, RegisterBehavior } from '@sapphire/framework';
+import { resolveKey } from '@sapphire/plugin-i18next';
+import { Command, CommandOptionsRunTypeEnum } from '@sapphire/framework';
 import { capitalize } from '#lib/functions';
 
 import { MessageEmbed } from "discord.js";
@@ -31,7 +32,7 @@ export class Help extends Command {
                 })
         }, {
             guildIds: ['975124858298040451'], // guilds for the command to be registered in; global if empty
-            idHints: '1017336631163895808', // commandId, define after registering (id will be in log after first run)
+            idHints: '1017764480215687188', // commandId, define after registering (id will be in log after first run)
         })
     }
 
@@ -47,8 +48,8 @@ export class Help extends Command {
         const command = this.container.stores.get("commands").get(args);
 
         const successEmbed = new MessageEmbed()
-            .setTitle(`Search Result | ${command.name}`)
-            .setDescription(`**Name:** ${command.name}\n**Description:** \`${command.description}\``)
+            .setTitle(`${await resolveKey(interaction, 'help:searchResult')} | ${command.name}`)
+            .setDescription(`**${await resolveKey(interaction, 'help:commandSuccessName')}:** ${command.name}\n**${await resolveKey(interaction, 'help:commandSuccessDescription')}:** \`${command.description}\``)
             .setColor(this.container.color.PASTEL_GREEN)
 
         return await interaction.reply({ embeds: [successEmbed], ephemeral: true })

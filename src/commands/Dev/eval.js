@@ -35,14 +35,14 @@ export class Eval extends Command {
                 )
         }, {
             guildIds: ['975124858298040451'], // guilds for the command to be registered in; global if empty
-            idHints: '1017143173321064618', // commandId, define after registering (id will be in log after first run)
+            idHints: '1017764477774614598', // commandId, define after registering (id will be in log after first run)
         })
     }
 
     // Run the slash command
     async chatInputRun(interaction) {
-        const code = interaction.options.getString("code", true);
-        const async = interaction.options.getBoolean("async", false);
+        const code = interaction.options.getString("code");
+        const async = interaction.options.getBoolean("async");
         const { success, time, result, thenable } = await this.eval(code, interaction, async);
 
         if (success && thenable) return result;

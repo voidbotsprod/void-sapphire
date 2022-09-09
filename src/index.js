@@ -1,12 +1,18 @@
 import '#lib/setup';
 import { container, LogLevel, SapphireClient, BucketScope } from '@sapphire/framework';
 import { Time } from "@sapphire/time-utilities";
+import '@sapphire/plugin-i18next/register';
 
 const client = new SapphireClient({
     intents: [
         'GUILDS',
         'GUILD_MESSAGES',
         'GUILD_MEMBERS'],
+    i18n: {
+        fetchLanguage: async (context) => {
+            return "en-US"; // pretty useful website: http://www.lingoes.net/en/translator/langcode.htm
+        }
+    },
     defaultCooldown: {
         delay: Time.Second * 10,
         limit: 2,

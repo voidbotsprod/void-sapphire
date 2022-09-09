@@ -20,6 +20,7 @@
     "@sapphire/fetch": "^2.4.1",
     "@sapphire/framework": "next",
     "@sapphire/plugin-api": "^4.0.0",
+    "@sapphire/plugin-i18next": "^3.0.0",
     "@sapphire/plugin-logger": "next",
     "@sapphire/plugin-subcommands": "^3.2.2-next.c247799.0",
     "@sapphire/time-utilities": "^1.7.5",
