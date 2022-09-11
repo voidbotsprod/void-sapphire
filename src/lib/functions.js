@@ -4,7 +4,7 @@ import { MessageEmbed } from 'discord.js';
 import { isNullish, isNullishOrZero } from '@sapphire/utilities';
 
 /**
- * 
+ * Shortens a text.
  * @param {string} input Input string
  * @param {number} from Start index
  * @param {number} to End index
@@ -22,7 +22,7 @@ export function cutTo(input = 'error', from = 0, to = 250, ending = true) {
 }
 
 /**
- * 
+ * Wraps a string to fit into a certain length.
  * @param {string} input String to be wrapped
  * @param {number} length Length of each line
  * @returns Wrapped string
