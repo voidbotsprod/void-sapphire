@@ -1,7 +1,8 @@
 import { resolveKey } from '@sapphire/plugin-i18next';
 import { Command, CommandOptionsRunTypeEnum } from '@sapphire/framework';
 import { isMessageInstance } from "@sapphire/discord.js-utilities";
-export class Ping extends Command {
+
+export class PingCommand extends Command {
     constructor(context, options) {
         super(context, {
             ...options,

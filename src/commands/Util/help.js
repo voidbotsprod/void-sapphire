@@ -4,7 +4,7 @@ import { capitalize } from '#lib/functions';
 
 import { MessageEmbed } from "discord.js";
 
-export class Help extends Command {
+export class HelpCommand extends Command {
     constructor(context, options) {
         super(context, {
             ...options,

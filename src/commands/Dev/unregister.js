@@ -5,7 +5,7 @@ import { Routes } from 'discord-api-types/v9';
 
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 
-export class UserCommand extends Subcommand {
+export class UnregisterCommand extends Subcommand {
     constructor(context, options) {
         super(context, {
             ...options,

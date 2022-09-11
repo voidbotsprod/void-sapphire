@@ -1,6 +1,6 @@
 import { Command, CommandOptionsRunTypeEnum } from '@sapphire/framework';
 
-export class Say extends Command {
+export class SayCommand extends Command {
     constructor(context, options) {
         super(context, {
             ...options,
