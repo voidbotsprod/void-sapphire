@@ -26,7 +26,7 @@ export function cutTo(input = 'error', from = 0, to = 250, ending = true) {
  * @param {string} input String to be wrapped
  * @param {number} length Length of each line
  * @returns Wrapped string
- */
+*/
 export function softWrap(input, length = 30) {
     const wrap = input.replace(new RegExp(`(?![^\\n]{1,${length}}$)([^\\n]{1,${length}})\\s`, 'g'), '$1\n');
 
