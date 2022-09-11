@@ -24,7 +24,7 @@ export class SayCommand extends Command {
                 )
         }, {
             guildIds: ['975124858298040451'], // guilds for the command to be registered in; global if empty
-            idHints: '1017764482505768990', // commandId, define after registering (id will be in log after first run)
+            idHints: '1018626955790258308', // commandId, define after registering (id will be in log after first run)
         })
     }
 

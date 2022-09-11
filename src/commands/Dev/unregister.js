@@ -48,7 +48,7 @@ export class UnregisterCommand extends Subcommand {
                 .addSubcommand((command) => command.setName('guild').setDescription('Unregister all guild application commands.'))
         }, {
             guildIds: ['975124858298040451'], // guilds for the command to be registered in; global if empty
-            idHints: '1017764478995152896', // commandId, define after registering (id will be in log after first run)
+            idHints: '1018626870750752919', // commandId, define after registering (id will be in log after first run)
         })
     }
 
