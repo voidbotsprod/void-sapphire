@@ -3,7 +3,7 @@ import { blue, gray, green, magenta, magentaBright, white, yellow } from 'colore
 
 const dev = process.env.NODE_ENV === 'DEVELOPMENT';
 
-export class UserEvent extends Listener {
+export class ReadyEvent extends Listener {
     style = dev ? yellow : blue;
 
     constructor(context, options = {}) {

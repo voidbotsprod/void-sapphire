@@ -28,7 +28,6 @@ export class SayCommand extends Command {
         })
     }
 
-    // Run the slash command
     async chatInputRun(interaction) {
         let text = interaction.options.getString("text", true);
 
