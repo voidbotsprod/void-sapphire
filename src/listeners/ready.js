@@ -24,9 +24,10 @@ export class UserEvent extends Listener {
     printBanner() {
         const llc = dev ? magentaBright : white;
         const blc = dev ? magenta : blue;
+        const glc = green;
 
         client.logger.info( // is there a better way to do this?
-            String.raw`Gateway online
+            String.raw`[${glc('+')}] Gateway online
 ${dev ? `${blc('<') + llc('/') + blc('>') + llc(` ${process.env.NODE_ENV} ENVIRONMENT`)}` : 'PRODUCTION ENVIRONMENT'}
 ${llc(`v${process.env.VERSION}`)}`
         );
@@ -37,9 +38,9 @@ ${llc(`v${process.env.VERSION}`)}`
     */
     printStoreDebugInformation() {
         const { client, logger } = this.container;
-        let stores = [...client.stores.values()];
-        let first = stores.shift();
-        let last = stores.pop();
+        const stores = [...client.stores.values()];
+        const first = stores.shift();
+        const last = stores.pop();
 
         logger.info(this.styleStore(first, '┌─'));
         for (const store of stores) logger.info(this.styleStore(store, '├─'));
