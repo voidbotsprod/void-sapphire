@@ -52,12 +52,17 @@ export class ReadyEvent extends Listener {
     /**
      * Prints a magenta (DEVELOPMENT) or blue (PRODUCTION) info banner depending on the NODE_ENV.
     */
-    printBanner() {
+    async printBanner() {
         client.logger.info(String.raw`
 [${green('+')}] Gateway online
 ${environmentType ? `${blc('</>') + llc(` ${process.env.NODE_ENV} ENVIRONMENT`)}` : 'PRODUCTION ENVIRONMENT'}
 ${llc(`v${process.env.VERSION}`)}`.trim()
         );
+
+        const connectionSuccess = `Connected to database ${green(process.env.DB_NAME)} on ${llc(process.env.DB_HOST)}:${blc(process.env.DB_PORT)}`;
+        const connectionFailure = `Failed to connect to database ${redBright(process.env.DB_NAME)} on ${redBright(process.env.DB_HOST)}:${red(process.env.DB_PORT)}`;
+        const statusString = await DB.getConnection().then(() => connectionSuccess).catch(() => connectionFailure);
+        this.container.logger.info(statusString)
     }
 
     /**

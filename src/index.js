@@ -1,7 +1,8 @@
 import '#lib/setup';
-import { LogLevel, SapphireClient, BucketScope } from '@sapphire/framework';
-import { Time } from "@sapphire/time-utilities";
+import { BucketScope, LogLevel, SapphireClient } from '@sapphire/framework';
 import '@sapphire/plugin-i18next/register';
+import { Time } from "@sapphire/time-utilities";
+import mysql from "mysql2";
 
 const client = new SapphireClient({
     intents: ['GUILDS', 'GUILD_MESSAGES', 'GUILD_MEMBERS'],
