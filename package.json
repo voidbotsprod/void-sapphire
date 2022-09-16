@@ -11,7 +11,8 @@
   "author": "BluePotatoBP, Xavons, JBTech",
   "license": "ISC",
   "imports": {
-    "#lib/*": "./src/lib/*.js"
+    "#lib/*": "./src/lib/*.js",
+    "#models/*": "./src/models/*.js"
   },
   "dependencies": {
     "@discordjs/rest": "^1.1.0",

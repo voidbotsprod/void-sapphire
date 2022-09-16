@@ -1,6 +1,5 @@
 import { Listener, container } from '@sapphire/framework';
 import { Time } from "@sapphire/time-utilities";
-import mysql from "mysql2";
 import { blue, gray, green, magenta, magentaBright, white, yellow, redBright, red } from 'colorette';
 
 const environmentType = process.env.NODE_ENV === 'DEVELOPMENT';
@@ -36,30 +35,6 @@ export class ReadyEvent extends Listener {
         this.printBanner();
         this.printStoreDebugInformation();
         await this.setStatus();
-        await this.dbConnect();
-    }
-
-    /**
-     * Establish database connection and create a pool. 
-     * https://www.npmjs.com/package/mysql2#using-connection-pools
-     */
-    async dbConnect() {
-        const pool = mysql.createPool({
-            host: process.env.DB_HOST,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASS,
-            database: process.env.DB_NAME,
-            port: process.env.DB_PORT,
-            waitForConnections: true,
-            connectionLimit: 10,
-            queueLimit: 0
-        });
-
-        global.DB = pool.promise();
-        const connectionSuccess = `Connected to database ${green(process.env.DB_NAME)} on ${llc(process.env.DB_HOST)}:${blc(process.env.DB_PORT)}`;
-        const connectionFailure = `Failed to connect to database ${redBright(process.env.DB_NAME)} on ${redBright(process.env.DB_HOST)}:${red(process.env.DB_PORT)}`;
-        const statusString = await DB.getConnection().then(() => connectionSuccess).catch(() => connectionFailure);
-        this.container.logger.info(statusString);
     }
 
     /**
