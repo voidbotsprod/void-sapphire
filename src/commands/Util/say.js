@@ -5,7 +5,6 @@ export class SayCommand extends Command {
         super(context, {
             ...options,
             name: 'say',
-            aliases: ['echo', 's'],
             description: 'Sends text.',
             runIn: CommandOptionsRunTypeEnum.GuildText
         });
