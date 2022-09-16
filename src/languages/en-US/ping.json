@@ -1,6 +1,7 @@
 {
-    "pinging": "Doing funny stuff...",
-    "botToApi": "Bot to API",
-    "messageRT": "Message Round Trip",
-    "failed": "Failed to retrieve ping!"
+    "Pinging": "Doing funny stuff...",
+    "BotToApi": "Bot to API",
+    "MessageRT": "Message Round Trip",
+    "DatabaseRT": "Database Round Trip",
+    "Failed": "Failed to retrieve ping!"
 }
