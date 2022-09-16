@@ -1,22 +1,25 @@
 import '#lib/setup';
-import { container, LogLevel, SapphireClient, BucketScope } from '@sapphire/framework';
+import { LogLevel, SapphireClient, BucketScope } from '@sapphire/framework';
 import { Time } from "@sapphire/time-utilities";
 import '@sapphire/plugin-i18next/register';
 
 const client = new SapphireClient({
-    intents: [
-        'GUILDS',
-        'GUILD_MESSAGES',
-        'GUILD_MEMBERS'],
+    intents: ['GUILDS', 'GUILD_MESSAGES', 'GUILD_MEMBERS'],
     i18n: {
         fetchLanguage: async (context) => {
-            return "en-US"; // pretty useful website: http://www.lingoes.net/en/translator/langcode.htm
+            const defaultLanguage = 'en-US';
+            if (!context.guild) return defaultLanguage;
+            // Accepted language codes: http://www.lingoes.net/en/translator/langcode.htm
+            const languageQuery = await DB.execute(`SELECT Code FROM languages JOIN guilds ON languages.id = guilds.languageId WHERE guilds.id = ?`, [context.guild.id]);
+            // Check if theres a language set for the guild
+            return !languageQuery[0][0] ? defaultLanguage : languageQuery[0][0].Code;
+
         }
     },
     defaultCooldown: {
         delay: Time.Second * 10,
         limit: 2,
-        filteredUsers: process.env.OWNERS.split(',',),
+        filteredUsers: process.env.OWNERS.split(','),
         scope: BucketScope.User
     },
     shards: 'auto',
@@ -27,26 +30,10 @@ const client = new SapphireClient({
 
 global.client = client;
 
-container.color = {
-    PASTEL_GREEN: 0x87de7f,
-    CHERRY_RED: 0x8e3741,
-    BLURPLE: 0x5865F2,
-    BLURPLE_CLASSIC: 0x7289DA,
-    GREYPLE: 0x99AAB5,
-    DARK_BUT_NOT_BLACK: 0x2C2F33,
-    NOT_QUITE_BLACK: 0x23272A
-}
-
-container.emoji = {
-    POSITIVE: '<:positive:1017154150464753665>',
-    NEGATIVE: '<:negative:1017154192525250590>',
-    NEUTRAL: '<:neutral:1017154199735259146>'
-}
-
 const main = async () => {
     try {
         client.logger.info('Logging in...');
-        await client.login(process.env.NODE_ENV == 'PRODUCTION' ? process.env.PROD_TOKEN : process.env.DEV_TOKEN);
+        await client.login();
         client.logger.info(`Logged in as ${client.user.username} [${client.user.id}]`);
     } catch (error) {
         client.logger.fatal(error);
