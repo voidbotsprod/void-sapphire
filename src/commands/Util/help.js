@@ -48,8 +48,8 @@ export class HelpCommand extends Command {
         const command = this.container.stores.get("commands").get(args);
 
         const successEmbed = new MessageEmbed()
-            .setTitle(`${await resolveKey(interaction, 'help:searchResult')} | ${command.name}`)
-            .setDescription(`**${await resolveKey(interaction, 'help:commandSuccessName')}:** ${command.name}\n**${await resolveKey(interaction, 'help:commandSuccessDescription')}:** \`${command.description}\``)
+            .setTitle(`${await resolveKey(interaction, 'help:SearchResult')} | ${command.name}`)
+            .setDescription(`**${await resolveKey(interaction, 'help:CommandSuccessName')}:** ${command.name}\n**${await resolveKey(interaction, 'help:CommandSuccessDescription')}:** \`${command.description}\``)
             .setColor(this.container.color.PASTEL_GREEN)
 
         return await interaction.reply({ embeds: [successEmbed], ephemeral: true })

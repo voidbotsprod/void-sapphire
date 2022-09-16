@@ -26,20 +26,25 @@ export class PingCommand extends Command {
     async chatInputRun(interaction) {
         // Send initial message and fetch it so we can access the sent message.
         const msg = await interaction.reply({
-            content: await resolveKey(interaction, 'ping:pinging'),
+            content: await resolveKey(interaction, 'ping:Pinging'),
             fetchReply: true
         }).catch(() => { });
+        // Insert initial timestamp
+        await DB.execute(`INSERT INTO ping (UserId, GuildId, PingedAtTimestamp) VALUES (?, ?, ?)`, [interaction.user.id, interaction.guildId, Date.now()]);
 
         // Check if the interaction is a message and not an APImessage
         if (isMessageInstance(msg)) {
             const clientPing = Math.round(await client.ws.ping);
             const rtPing = msg.createdTimestamp - interaction.createdTimestamp
-            const formatted = `🏓 Pong!\n\n**${await resolveKey(msg, 'ping:botToApi')}:** ${clientPing}ms\n**${await resolveKey(msg, 'ping:messageRT')}:** ${rtPing}ms`
+            const dbPing = Date.now() - (await DB.execute(`SELECT PingedAtTimestamp FROM ping WHERE UserId = ? AND GuildId = ?`, [interaction.user.id, interaction.guildId]))[0][0].PingedAtTimestamp;
+            const formatted = `🏓 Pong!\n\n**${await resolveKey(msg, 'ping:BotToApi')}:** ${clientPing}ms\n**${await resolveKey(msg, 'ping:MessageRT')}:** ${rtPing}ms\n**${await resolveKey(msg, 'ping:DatabaseRT')}:** ${dbPing}ms`;
+
+            // Remove inserted timestamp
+            await DB.execute(`DELETE FROM ping WHERE UserId = ? AND GuildId = ?`, [interaction.user.id, interaction.guildId]);
 
             return await interaction.editReply({ content: formatted }).catch(() => { });
         }
-
         // If the interaction is not a message, return error message
-        return await interaction.reply({ content: await resolveKey(interaction, 'ping:failed'), ephemeral: true }).catch(() => { });
+        return await interaction.reply({ content: await resolveKey(interaction, 'ping:Failed'), ephemeral: true }).catch(() => { });
     }
 }
