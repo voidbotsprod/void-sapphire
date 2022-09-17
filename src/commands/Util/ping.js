@@ -30,13 +30,13 @@ export class PingCommand extends Command {
             fetchReply: true
         }).catch(() => { });
         // Insert initial timestamp
-        await DB.execute(`INSERT INTO ping (UserId, GuildId, PingedAtTimestamp) VALUES (?, ?, ?)`, [interaction.user.id, interaction.guildId, Date.now()]);
+        await DB.execute(`INSERT INTO ping (UserId, GuildId, PingedAt) VALUES (?, ?, ?)`, [interaction.user.id, interaction.guildId, Date.now()]);
 
         // Check if the interaction is a message and not an APImessage
         if (isMessageInstance(msg)) {
             const clientPing = Math.round(await client.ws.ping);
             const rtPing = msg.createdTimestamp - interaction.createdTimestamp
-            const dbPing = Date.now() - (await DB.execute(`SELECT PingedAtTimestamp FROM ping WHERE UserId = ? AND GuildId = ?`, [interaction.user.id, interaction.guildId]))[0][0].PingedAtTimestamp;
+            const dbPing = Date.now() - (await DB.execute(`SELECT PingedAt FROM ping WHERE UserId = ? AND GuildId = ?`, [interaction.user.id, interaction.guildId]))[0][0].PingedAt;
             const formatted = `🏓 Pong!\n\n**${await resolveKey(msg, 'ping:BotToApi')}:** ${clientPing}ms\n**${await resolveKey(msg, 'ping:MessageRT')}:** ${rtPing}ms\n**${await resolveKey(msg, 'ping:DatabaseRT')}:** ${dbPing}ms`;
 
             // Remove inserted timestamp
