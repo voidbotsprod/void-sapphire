@@ -12,7 +12,8 @@ export class ReadyEvent extends Listener {
     constructor(context, options = {}) {
         super(context, {
             ...options,
-            once: true
+            once: true,
+            event: 'ready'
         });
     }
 
