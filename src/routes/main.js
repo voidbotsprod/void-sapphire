@@ -2,6 +2,7 @@ import { HttpCodes, methods, Route } from '@sapphire/plugin-api';
 import { Time } from '@sapphire/time-utilities';
 import { RateLimitManager } from '@sapphire/ratelimits';
 import { isRateLimited } from '#lib/functions';
+
 export class MainRoute extends Route {
 	rateLimitTime = Time.Second * 5;
 	

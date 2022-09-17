@@ -11,7 +11,8 @@
   "author": "BluePotatoBP, Xavons, JBTech",
   "license": "ISC",
   "imports": {
-    "#lib/*": "./src/lib/*.js"
+    "#lib/*": "./src/lib/*.js",
+    "#models/*": "./src/models/*.js"
   },
   "dependencies": {
     "@discordjs/rest": "^1.1.0",
@@ -26,6 +27,7 @@
     "@sapphire/time-utilities": "^1.7.5",
     "discord.js": "^13.10.3",
     "dotenv": "^16.0.1",
+    "moment": "^2.29.4",
     "mysql2": "^2.3.3",
     "paste.gg": "^1.0.5"
   },

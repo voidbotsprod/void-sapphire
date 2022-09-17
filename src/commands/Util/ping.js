@@ -39,9 +39,6 @@ export class PingCommand extends Command {
             const dbPing = Date.now() - (await DB.execute(`SELECT PingedAt FROM ping WHERE UserId = ? AND GuildId = ?`, [interaction.user.id, interaction.guildId]))[0][0].PingedAt;
             const formatted = `🏓 Pong!\n\n**${await resolveKey(msg, 'ping:BotToApi')}:** ${clientPing}ms\n**${await resolveKey(msg, 'ping:MessageRT')}:** ${rtPing}ms\n**${await resolveKey(msg, 'ping:DatabaseRT')}:** ${dbPing}ms`;
 
-            // Remove inserted timestamp
-            await DB.execute(`DELETE FROM ping WHERE UserId = ? AND GuildId = ?`, [interaction.user.id, interaction.guildId]);
-
             return await interaction.editReply({ content: formatted }).catch(() => { });
         }
         // If the interaction is not a message, return error message
