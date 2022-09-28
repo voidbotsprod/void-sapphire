@@ -1,6 +1,7 @@
 import { resolveKey } from '@sapphire/plugin-i18next';
 import { Command, CommandOptionsRunTypeEnum } from '@sapphire/framework';
 import { isMessageInstance } from "@sapphire/discord.js-utilities";
+import { DB } from '#lib/functions'
 
 export class PingCommand extends Command {
     constructor(context, options) {

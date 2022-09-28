@@ -90,7 +90,13 @@ export function isRateLimited({ time, request, response, manager, auth = false }
     return false;
 }
 
-export async function dbExecute(query, data) {
+/**
+ * 
+ * @param {string} query The query to use
+ * @param {Array<Object>} data The data to search through
+ * @returns result
+ */
+export async function DB(query, data) {
     const result = await dbPool.execute(query, data);
     return result[0][0];
 }
