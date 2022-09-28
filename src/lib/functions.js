@@ -70,9 +70,9 @@ export function sendLoadingMessage(interaction) {
  * @param param0 The parameters for this function
  * @returns `true` if the user should be rate limited, `false` otherwise
  */
- export function isRateLimited({ time, request, response, manager, auth = false }) {
+export function isRateLimited({ time, request, response, manager, auth = false }) {
     if (isNullishOrZero(time) || isNullish(request) || isNullish(response) || isNullish(manager)) {
-      return false;
+        return false;
     }
     const id = auth ? request.auth.id : request.headers['x-api-key'] || request.socket.remoteAddress;
     const bucket = manager.acquire(id);
@@ -81,11 +81,16 @@ export function sendLoadingMessage(interaction) {
     response.setHeader('X-RateLimit-Remaining', bucket.remaining.toString());
     response.setHeader('X-RateLimit-Reset', bucket.remainingTime.toString());
     if (bucket.limited) {
-      response.setHeader('Retry-After', bucket.remainingTime.toString());
-      return true;
+        response.setHeader('Retry-After', bucket.remainingTime.toString());
+        return true;
     }
     try {
-      bucket.consume();
-    } catch {}
+        bucket.consume();
+    } catch { }
     return false;
-  }
+}
+
+export async function dbExecute(query, data) {
+    const result = await dbPool.execute(query, data);
+    return result[0][0];
+}
