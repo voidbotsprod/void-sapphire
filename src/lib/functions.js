@@ -12,13 +12,14 @@ import { isNullish, isNullishOrZero } from '@sapphire/utilities';
  * @returns Formatted string
  */
 export function cutTo(input = 'error', from = 0, to = 250, ending = true) {
-    /* NOTE: Does not check for ' '(spaces) */
     if (input.length > to) {
-        let output = input.substring(from, to);
-        return ending ? (output += '...') : output;
-    } else {
-        return input;
+        // check if the last character before the ... is a space and remove it
+        if (input.charAt(to - 1) === ' ') {
+            return input.substring(from, to - 1) + (ending ? '...' : '');
+        }
+        return input.substring(from, to) + (ending ? '...' : '');
     }
+    return input;
 }
 
 /**
