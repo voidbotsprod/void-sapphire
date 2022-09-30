@@ -101,3 +101,37 @@ export async function DB(query, data) {
     const result = await dbPool.execute(query, data);
     return result[0][0];
 }
+
+/**
+ * 
+ * @param {*} ctx The context to use
+ * @param {number} x The x position 
+ * @param {number} y The y position 
+ * @param {number} width The width of the image 
+ * @param {number} height The height of the image 
+ * @returns Greyscale image
+ */
+export function greyscale(ctx, x, y, width, height) {
+    const data = ctx.getImageData(x, y, width, height);
+    for (let i = 0; i < data.data.length; i += 4) {
+        const brightness = (0.24 * data.data[i]) + (0.5 * data.data[i + 1]) + (0.16 * data.data[i + 2]);
+        data.data[i] = brightness;
+        data.data[i + 1] = brightness;
+        data.data[i + 2] = brightness;
+    }
+    ctx.putImageData(data, x, y);
+    return ctx;
+}
+
+export function contrast(ctx, x, y, width, height, multiplier = 10) {
+    const data = ctx.getImageData(x, y, width, height);
+    const factor = (multiplier*10 / 100);
+    const intercept = 128 * (1 - factor);
+    for (let i = 0; i < data.data.length; i += 4) {
+        data.data[i] = (data.data[i] * factor) + intercept;
+        data.data[i + 1] = (data.data[i + 1] * factor) + intercept;
+        data.data[i + 2] = (data.data[i + 2] * factor) + intercept;
+    }
+    ctx.putImageData(data, x, y);
+    return ctx;
+}

@@ -3,7 +3,7 @@ import { BucketScope, LogLevel, SapphireClient } from '@sapphire/framework';
 import '@sapphire/plugin-i18next/register';
 import { Time } from "@sapphire/time-utilities";
 import mysql from "mysql2";
-import { DB } from '#lib/functions'
+import { DB } from '#lib/functions';
 
 const client = new SapphireClient({
     intents: ['GUILDS', 'GUILD_MESSAGES', 'GUILD_MEMBERS'],
