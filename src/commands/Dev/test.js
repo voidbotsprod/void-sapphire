@@ -70,6 +70,13 @@ export class TestCommand extends Command {
         ctx.lineTo(200, 230);
         ctx.stroke();
 
+        // 2nd "Crossing" line
+        ctx.strokeStyle = '#36373D';
+        ctx.beginPath();
+        ctx.lineTo(437, 20);
+        ctx.lineTo(437, 230);
+        ctx.stroke();
+
         // Drawing the avatar
         const avatar = await loadImage(interaction.user.displayAvatarURL({ format: 'png', size: 256 }));
         ctx.drawImage(avatar, 60, 90, 100, 100);
@@ -124,11 +131,25 @@ export class TestCommand extends Command {
             ctx.drawImage(slot, 210 + (i % 5) * (30 + slotGapX), 60 + Math.floor(i / 5) * (30 + slotGapY), 30, 30);
         }
 
-        // Drawing lorem ipsum text starting from the right end of the base
+        // Drawing stats text
         ctx.font = "16px Minecraft";
         ctx.fillStyle = '#FFFFFF';
-        ctx.textAlign = "right";
-        ctx.fillText(`• Stat One: 10\n \n• Stat Two: 20\n \n• Stat Three: 30\n \n• Stat Four: 40\n \n• Stat Five: 50`, base.width - 100, 72);
+        ctx.textAlign = "left";
+        ctx.fillText(`• Stat One: 10`, 447, 78);
+        ctx.fillText(`• Stat Two: 20`, 447, 125);
+        ctx.fillText(`• Stat Three: 30`, 447, 172);
+
+        ctx.font = "8px Minecraft";
+        ctx.fillStyle = '#474A4D';
+        ctx.fillText(softWrap(cutTo(`Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`, 0, 100, true), 55), 447, 219);
+
+        // Drawing stats subtext
+        ctx.font = "10px Minecraft";
+        ctx.fillStyle = '#CDCDCE';
+        ctx.textAlign = "left";
+        ctx.fillText(softWrap(`More detailed explanation of something or other.`, 40), 457, 93);
+        ctx.fillText(softWrap(`More detailed explanation of something or other.`, 40), 457, 140);
+        ctx.fillText(softWrap(`More detailed explanation of something or other.`, 40), 457, 187);
 
         // Creating a new message attachment
         const attachment = new MessageAttachment(canvas.toBuffer(), 'test-image.png');
