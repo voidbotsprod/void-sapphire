@@ -123,6 +123,16 @@ export function greyscale(ctx, x, y, width, height) {
     return ctx;
 }
 
+/**
+ * 
+ * @param {*} ctx The context to use
+ * @param {number} x The x position
+ * @param {number} y The y position
+ * @param {number} width The width of the image
+ * @param {number} height The height of the image
+ * @param {number} multiplier The multiplier to use
+ * @returns Modified Context
+ */
 export function contrast(ctx, x, y, width, height, multiplier = 10) {
     const data = ctx.getImageData(x, y, width, height);
     const factor = (multiplier*10 / 100);
@@ -134,4 +144,44 @@ export function contrast(ctx, x, y, width, height, multiplier = 10) {
     }
     ctx.putImageData(data, x, y);
     return ctx;
+}
+
+/**
+     * Checks wether the user exists in our database.
+     * @param interaction The interaction to use.
+     */
+ export async function checkIfUserExists(interaction) {
+    // check if user exists in database
+    const result = await DB(`SELECT * FROM users WHERE Id = ?`, [interaction.user.id])
+    // if user does not exist return false
+    return result ? true : false
+}
+
+/**
+ * Checks wether a guild exists in our database.
+ * @param interaction The interaction to use.
+ */
+export async function checkIfGuildExists(interaction) {
+    // check if guild exists in database
+    const result = await DB(`SELECT * FROM guilds WHERE Id = ?`, [interaction.guildId])
+    // if guild does not exist return false
+    return result ? true : false
+}
+
+/**
+ * Insert a user into our database.
+ * @param interaction The interaction to use.
+ */
+export async function insertUser(interaction) {
+    // insert user into database
+    await DB(`INSERT INTO users (Id, UserStatsId, Coins) VALUES (?, ?, ?)`, [interaction.user.id, null, 0]);
+}
+
+/**
+ * Insert a guild into our database.
+ * @param interaction The interaction to use.
+ */
+export async function insertGuild(interaction) {
+    // insert guild into database
+    await DB(`INSERT INTO guilds (Id, LanguageId) VALUES (?, ?)`, [interaction.guildId, null]);
 }
