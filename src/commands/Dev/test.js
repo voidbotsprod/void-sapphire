@@ -29,7 +29,6 @@ export class TestCommand extends Command {
         const TestBoard = new Board()
         const test = await TestBoard.create(interaction, 'global', interaction.guild.id, 100, 100, null)
 
-        console.log(await test)
         await interaction.reply({
             content: stripIndents`
             ${await test.existed ? '**Board info:**\n' : '**Created new board:**\n'}

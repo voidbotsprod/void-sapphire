@@ -34,10 +34,7 @@ export default class Board {
 
         let board = await this.getBoard();
         if (!board) {
-            await DB(
-                `INSERT INTO boards (boardTypeId, guildId, sizeX, sizeY, createdAt, expireAt) VALUES (?, ?, ?, ?, ?, ?)`,
-                [await this.boardTypeId(), this.guildId, this.sizeX, this.sizeY, this.createdAt, this.expireAt]
-            );
+            await DB(`INSERT INTO boards (boardTypeId, guildId, sizeX, sizeY, createdAt, expireAt) VALUES (?, ?, ?, ?, ?, ?)`, [await this.boardTypeId(), this.guildId, this.sizeX, this.sizeY, this.createdAt, this.expireAt]);
             board = await this.getBoard();
             board.existed = false;
 
@@ -55,10 +52,7 @@ export default class Board {
      * @returns {Promise<Board>}
      */
     async getBoard() {
-        const board = await DB(
-            `SELECT * FROM boards WHERE boardTypeId = ? AND guildId = ? AND sizeX = ? AND sizeY = ?`,
-            [await this.boardTypeId(), this.guildId, this.sizeX, this.sizeY]
-        );
+        const board = await DB(`SELECT * FROM boards WHERE boardTypeId = ? AND guildId = ? AND sizeX = ? AND sizeY = ?`, [await this.boardTypeId(), this.guildId, this.sizeX, this.sizeY]);
         if (!board) return null;
 
         return board;
@@ -68,10 +62,7 @@ export default class Board {
      * @returns {Promise<number>}
      */
     async boardTypeId() {
-        const type = await DB(
-            `SELECT id FROM boardtypes WHERE typeDescription = ?`,
-            [this.type]
-        );
+        const type = await DB(`SELECT id FROM boardtypes WHERE typeDescription = ?`, [this.type]);
         if (!type) return null;
 
         return type.id;
