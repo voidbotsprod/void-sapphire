@@ -43,6 +43,16 @@ To run the bot, you will need to create a .env file with the following environme
 
 `VERSION=1.0.0`
 
+`DB_HOST=`
+
+`DB_USER=`
+
+`DB_PASS=`
+
+`DB_NAME=`
+
+`DB_PORT=`
+
 
 ## Feedback/Support
 

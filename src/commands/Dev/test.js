@@ -1,7 +1,7 @@
 import { Command } from '@sapphire/framework';
-import { codeBlock, isThenable } from '@sapphire/utilities';
-import { inspect } from 'node:util';
+import { stripIndents } from 'common-tags'
 
+import Board from '#lib/board';
 
 export class TestCommand extends Command {
     constructor(context, options) {
@@ -25,8 +25,20 @@ export class TestCommand extends Command {
     }
 
     async chatInputRun(interaction) {
-        interaction.reply({
-            content: 'test'
+
+        const TestBoard = new Board()
+        const test = await TestBoard.create(interaction, 'global', interaction.guild.id, 100, 100, null)
+
+        await interaction.reply({
+            content: stripIndents`
+            ${await test.existed ? '**Board info:**\n' : '**Created new board:**\n'}
+            ID: ${await test.Id}
+            Type: ${await test.BoardTypeId}
+            Guild: ${await test.GuildId}
+            Size: ${await test.SizeX}x${await test.SizeY}
+            Created At: ${await test.CreatedAt}
+            Expires At: ${await test.ExpireAt ? test.ExpireAt : 'Never'}`
         })
+
     }
 }

@@ -62,7 +62,7 @@ ${llc(`v${process.env.VERSION}`)}`.trim()
 
         const connectionSuccess = `Connected to database ${green(process.env.DB_NAME)} on ${llc(process.env.DB_HOST)}:${blc(process.env.DB_PORT)}`;
         const connectionFailure = `Failed to connect to database ${redBright(process.env.DB_NAME)} on ${redBright(process.env.DB_HOST)}:${red(process.env.DB_PORT)}`;
-        const statusString = await DB.getConnection().then(() => connectionSuccess).catch(() => connectionFailure);
+        const statusString = await dbPool.getConnection().then(() => connectionSuccess).catch(() => connectionFailure);
         this.container.logger.info(statusString)
     }
 

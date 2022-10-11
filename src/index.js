@@ -3,6 +3,7 @@ import { BucketScope, LogLevel, SapphireClient } from '@sapphire/framework';
 import '@sapphire/plugin-i18next/register';
 import { Time } from "@sapphire/time-utilities";
 import mysql from "mysql2";
+import { DB } from '#lib/functions';
 
 const client = new SapphireClient({
     intents: ['GUILDS', 'GUILD_MESSAGES', 'GUILD_MEMBERS'],
@@ -11,9 +12,9 @@ const client = new SapphireClient({
             const defaultLanguage = 'en-US';
             if (!context.guild) return defaultLanguage;
             // Accepted language codes: http://www.lingoes.net/en/translator/langcode.htm
-            const languageQuery = await DB.execute(`SELECT Code FROM languages JOIN guilds ON languages.id = guilds.languageId WHERE guilds.id = ?`, [context.guild.id]);
+            const languageQuery = await DB(`SELECT Code FROM languages JOIN guilds ON languages.id = guilds.languageId WHERE guilds.id = ?`, [context.guild.id]);
             // Check if theres a language set for the guild
-            return !languageQuery[0][0] ? defaultLanguage : languageQuery[0][0].Code;
+            return !languageQuery ? defaultLanguage : languageQuery.Code;
 
         }
     },
@@ -40,7 +41,7 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
-global.DB = pool.promise();
+global.dbPool = pool.promise();
 global.client = client;
 
 const main = async () => {

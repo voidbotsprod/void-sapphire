@@ -9,9 +9,7 @@ export class chatInputCommandDeniedEvent extends Listener {
         });
     }
 
-    async run(event) {
-        console.log(`Chat input event denied: ${event}`);
-        event.defer();
-        return;
+    async run(interaction) {
+        return client.logger.error(`Event cancelled: ${interaction}`);
     }
 }
