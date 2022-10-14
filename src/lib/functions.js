@@ -174,7 +174,7 @@ export async function checkIfGuildExists(interaction) {
  */
 export async function insertUser(interaction) {
     // insert user into database
-    await DB(`INSERT INTO users (Id, UserStatsId, Coins) VALUES (?, ?, ?)`, [interaction.user.id, null, 0]);
+    await DB(`INSERT INTO users (Id, Coins, Xp) VALUES (?, ?, ?)`, [interaction.user.id, 0, 0]);
 }
 
 /**
