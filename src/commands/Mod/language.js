@@ -1,5 +1,6 @@
 import { CommandOptionsRunTypeEnum } from '@sapphire/framework';
 import { Subcommand } from '@sapphire/plugin-subcommands';
+import { DB } from '#lib/functions'
 
 export class LanguageCommand extends Subcommand {
     constructor(context, options) {
@@ -41,23 +42,30 @@ export class LanguageCommand extends Subcommand {
     }
 
     async chatInputRun(interaction) {
-        let option = interaction.options.getString("option");
-        console.log(option);
-        /* switch (option) {
-            case "set":
-                DB.execute(`SELECT * FROM guilds WHERE Id = '${interaction.guildId}'`).then(async (result) => {
-                    if (result[0].length == 0) {
-                        DB.execute(`INSERT INTO guilds (Id, LanguageId) VALUES ('${interaction.guildId}', 1)`);
-                        return await interaction.reply({ content: "Language set to English (US)." })
-                    } else {
-                        DB.execute(`UPDATE guilds SET LanguageId = 1 WHERE Id = '${interaction.guildId}'`);
-                        return await interaction.reply({ content: "Language set to English (US)." })
-                    }
-                });
-            case "reset":
-                return await interaction.reply({ content: "Reset" })
-            case "view":
-                return await interaction.reply({ content: "View" })
-        } */
+        const subcommandType = interaction.options._subcommand;
+
+        if (subcommandType === "set") {
+            this.setLanguage(interaction, 1);
+        } else if (subcommandType === "reset") {
+            return await interaction.reply({ content: "Reset (WIP)" })
+
+        } else if (subcommandType === "view") {
+            return await interaction.reply({ content: "View (WIP)" })
+
+        }
+    }
+
+    async setLanguage(interaction, language) {
+        await DB(`SELECT * FROM guilds WHERE Id = '${interaction.guildId}'`).then(async (result) => {
+            if (!result.Id) {
+                await DB(`INSERT INTO guilds (Id, LanguageId) VALUES ('${interaction.guildId}', ${language})`);
+                return await interaction.reply({ content: "Language set to English (US)." })
+            } else {
+                if(result.LanguageId === language) return await interaction.reply({ content: "Language is already set to English (US)." });
+
+                await DB(`UPDATE guilds SET LanguageId = ${language} WHERE Id = '${interaction.guildId}'`);
+                return await interaction.reply({ content: `Language set to ${language}` })
+            }
+        });
     }
 }

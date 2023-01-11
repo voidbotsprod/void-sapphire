@@ -1,7 +1,6 @@
+import { Command, CommandOptionsRunTypeEnum, container } from '@sapphire/framework';
 import { resolveKey } from '@sapphire/plugin-i18next';
-import { Command, CommandOptionsRunTypeEnum } from '@sapphire/framework';
 import { isMessageInstance } from "@sapphire/discord.js-utilities";
-import { DB } from '#lib/functions'
 
 export class PingCommand extends Command {
     constructor(context, options) {
@@ -31,15 +30,12 @@ export class PingCommand extends Command {
             content: await resolveKey(interaction, 'ping:Pinging'),
             fetchReply: true
         }).catch(() => { });
-        // Insert initial timestamp
-        await DB(`INSERT INTO ping (UserId, GuildId, PingedAt) VALUES (?, ?, ?)`, [interaction.user.id, interaction.guildId, Date.now()]);
 
         // Check if the interaction is a message and not an APImessage
         if (isMessageInstance(msg)) {
             const clientPing = Math.round(await client.ws.ping);
             const rtPing = msg.createdTimestamp - interaction.createdTimestamp
-            const pingedAtTime = await DB(`SELECT PingedAt FROM ping WHERE UserId = ? AND GuildId = ?`, [interaction.user.id, interaction.guildId])
-            const dbPing = Date.now() - pingedAtTime.PingedAt;
+            const dbPing = container.lastPing;
 
             const ping_BotToApi = await resolveKey(msg, 'ping:BotToApi')
             const ping_MessageRT = await resolveKey(msg, 'ping:MessageRT')
@@ -47,11 +43,9 @@ export class PingCommand extends Command {
 
             const formatted = `🏓 Pong!\n\n**${ping_BotToApi}:** ${clientPing}ms\n**${ping_MessageRT}:** ${rtPing}ms\n**${ping_DatabaseRT}:** ${dbPing}ms`;
 
-            await DB(`DELETE FROM ping WHERE UserId = ? AND GuildId = ?`, [interaction.user.id, interaction.guildId]);
             return await interaction.editReply({ content: formatted }).catch(() => { });
         }
         // If the interaction is not a message, return error message
-        await DB(`DELETE FROM ping WHERE UserId = ? AND GuildId = ?`, [interaction.user.id, interaction.guildId]);
         return await interaction.reply({ content: await resolveKey(interaction, 'ping:Failed'), ephemeral: true }).catch(() => { });
     }
 }

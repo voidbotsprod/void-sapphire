@@ -1,8 +1,9 @@
 import { Command } from '@sapphire/framework';
-import { createCanvas, Image, loadImage } from 'canvas';
-import { MessageAttachment } from 'discord.js';
+import { createCanvas, loadImage } from '@napi-rs/canvas';
+import { AttachmentBuilder } from 'discord.js';
 import { cutTo, softWrap, contrast, DB } from '#lib/functions'
-import { getColorFromURL } from "color-thief-node"
+import { getColor } from '#lib/color-thief-node';
+import { request } from 'undici';
 import approx from "approximate-number"
 
 export class ProfileCommand extends Command {
@@ -48,10 +49,8 @@ export class ProfileCommand extends Command {
         // Draw background and load base image
         ctx.fillStyle = '#2C2F33';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        const base = new Image();
-        base.onload = () => ctx.drawImage(base, 0, 0, canvas.width, canvas.height);
-        base.onerror = err => { throw err }
-        base.src = 'src/lib/images/profile/border/base_transparent.png';
+        const base = await loadImage("src/lib/images/profile/border/base_transparent.png");
+        ctx.drawImage(base, 0, 0, canvas.width, canvas.height);
 
         // Top line
         this.drawLine(ctx, 20, 50, base.width - 20, 50, '#36373D', 0.5);
@@ -69,12 +68,13 @@ export class ProfileCommand extends Command {
         ctx.fillText(cutTo(interaction.guild.name, 0, 14, true), 110, 40);
 
         // Avatar
-        const avatar = await loadImage(interaction.user.displayAvatarURL({ format: 'png', size: 256 }));
+        const { body } = await request(interaction.user.displayAvatarURL({ extension: 'png', size: 256 }));
+        const avatar = await loadImage(await body.arrayBuffer());
         ctx.drawImage(avatar, 60, 90, 100, 100);
         contrast(ctx, 60, 90, 100, 100, 8.5);
 
         // Username
-        const dominantColorRGB = await getColorFromURL(interaction.user.displayAvatarURL({ format: 'png', size: 256 }), 10);
+        const dominantColorRGB = await getColor(interaction.user.displayAvatarURL({ extension: 'png', size: 256 }));
         const dominantColorHEX = `#${dominantColorRGB[0].toString(16)}${dominantColorRGB[1].toString(16)}${dominantColorRGB[2].toString(16)}`;
 
         ctx.font = "16px Minecraft";
@@ -89,7 +89,7 @@ export class ProfileCommand extends Command {
         ctx.drawImage(frame, 60, 90, 100, 100);
 
         // Level icon and text
-        let currentLevel = Math.floor(Xp / 5000) + 1;
+        let currentLevel = `${Math.floor(Xp / 5000) + 1}`;
         const levelIcon = await loadImage('src/lib/images/profile/gui/levelIcon.png');
         ctx.drawImage(levelIcon, 210, 22, 19, 19);
         ctx.font = "16px Minecraft";
@@ -126,18 +126,18 @@ export class ProfileCommand extends Command {
 
         ctx.font = "8px Minecraft";
         ctx.fillStyle = '#474A4D';
-        ctx.fillText(softWrap(cutTo(`Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`, 0, 100, true), 55), 447, 219);
+        ctx.fillText(cutTo(`Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`, 0, 60, true), 447, 219);
 
         // Stats subtext
         ctx.font = "10px Minecraft";
         ctx.fillStyle = '#CDCDCE';
         ctx.textAlign = "left";
-        ctx.fillText(softWrap(`More detailed explanation of something or other.`, 40), 457, 93);
-        ctx.fillText(softWrap(`More detailed explanation of something or other.`, 40), 457, 140);
-        ctx.fillText(softWrap(`More detailed explanation of something or other.`, 40), 457, 187);
+        ctx.fillText(cutTo(`More detailed explanation of something or other.`, 0, 40), 457, 93);
+        ctx.fillText(cutTo(`More detailed explanation of something or other.`, 0, 40), 457, 140);
+        ctx.fillText(cutTo(`More detailed explanation of something or other.`, 0, 40), 457, 187);
 
         // Creating a new message attachment
-        const attachment = new MessageAttachment(canvas.toBuffer(), 'test-image.png');
+        const attachment = new AttachmentBuilder(canvas.toBuffer('image/png'));
 
         await interaction.reply({ files: [attachment] });
     }

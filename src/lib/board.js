@@ -8,6 +8,8 @@ export default class Board {
         this.interaction;
         this.type;
         this.guildId;
+        this.name;
+        this.description;
         this.sizeX;
         this.sizeY;
         this.createdAt;
@@ -19,26 +21,31 @@ export default class Board {
      * @param {import('discord.js').CommandInteraction} interaction
      * @param {number} type Board type id
      * @param {number} guildId Guild id
+     * @param {string} name Board name
+     * @param {string} description Board description
      * @param {number} sizeX Size X
      * @param {number} sizeY Size Y
      * @param {number} expireAt Epoch time
      */
-    async create(interaction, type, guildId, sizeX, sizeY, expireAt) {
+    async create(interaction, type, guildId, name, description, sizeX, sizeY, expireAt) {
         this.interaction = interaction;
         this.type = type;
         this.guildId = guildId;
+        this.name = name;
+        this.description = description;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
-        this.createdAt = Date.now();
+        this.createdAt = Math.floor(Date.now() / 1000);
         this.expireAt = expireAt;
 
-        let board = await this.getBoard();
+        let board = await this.getBoard(await this.getBoardTypeIdFromDesc(), guildId, name, sizeX, sizeY);
+
         if (!board) {
-            await DB(`INSERT INTO boards (boardTypeId, guildId, sizeX, sizeY, createdAt, expireAt) VALUES (?, ?, ?, ?, ?, ?)`, [await this.boardTypeId(), this.guildId, this.sizeX, this.sizeY, this.createdAt, this.expireAt]);
-            board = await this.getBoard();
+            await DB(`INSERT INTO boards (boardTypeId, guildId, name, description, sizeX, sizeY, createdAt, expireAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [await this.getBoardTypeIdFromDesc(), guildId, name, description, sizeX, sizeY, this.createdAt, expireAt]);
+            board = await this.getBoard(await this.getBoardTypeIdFromDesc(), guildId, name, sizeX, sizeY);
             board.existed = false;
 
-            client.logger.info(`Saved new board with type '${this.type}' from guild '${this.guildId}' with the size of ${this.sizeX}x${this.sizeY}, expires at ${this.expireAt ? this.expireAt : 'never'}`);
+            client.logger.info(`Saved new board with type '${type}' from guild '${guildId}' with the size of ${sizeX}x${sizeY}, expires at ${expireAt ? expireAt : 'never'}`);
         } else {
             board.existed = true;
             client.logger.info(`Board already exists, creation cancelled.`);
@@ -50,9 +57,14 @@ export default class Board {
     /**
      * Get board properties of the created board.
      * @returns {Promise<Board>}
+     * @param {number} boardType
+     * @param {number} guildId
+     * @param {string} name
+     * @param {number} sizeX
+     * @param {number} sizeY
      */
-    async getBoard() {
-        const board = await DB(`SELECT * FROM boards WHERE boardTypeId = ? AND guildId = ? AND sizeX = ? AND sizeY = ?`, [await this.boardTypeId(), this.guildId, this.sizeX, this.sizeY]);
+    async getBoard(boardType, guildId, name, sizeX, sizeY) {
+        const board = await DB(`SELECT * FROM boards WHERE boardTypeId = ? AND guildId = ? AND name = ? AND sizeX = ? AND sizeY = ?`, [boardType, guildId, name, sizeX, sizeY]);
         if (!board) return null;
 
         return board;
@@ -60,8 +72,9 @@ export default class Board {
 
     /**
      * @returns {Promise<number>}
+     * @param {string} boardType
      */
-    async boardTypeId() {
+    async getBoardTypeIdFromDesc() {
         const type = await DB(`SELECT id FROM boardtypes WHERE typeDescription = ?`, [this.type]);
         if (!type) return null;
 
