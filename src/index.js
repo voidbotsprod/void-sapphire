@@ -1,10 +1,10 @@
 import '#lib/setup';
-import { BucketScope, LogLevel, SapphireClient } from '@sapphire/framework';
+import { BucketScope, LogLevel, SapphireClient, container } from '@sapphire/framework';
 import { GatewayIntentBits } from 'discord.js';
 import '@sapphire/plugin-i18next/register';
 import { Time } from "@sapphire/time-utilities";
 import mysql from "mysql2";
-import { DB } from '#lib/functions';
+import { DB } from "#lib/functions";
 
 const client = new SapphireClient({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers],
@@ -16,7 +16,6 @@ const client = new SapphireClient({
             const languageQuery = await DB(`SELECT Code FROM languages JOIN guilds ON languages.id = guilds.languageId WHERE guilds.id = ?`, [context.guild.id]);
             // Check if theres a language set for the guild
             return !languageQuery ? defaultLanguage : languageQuery.Code;
-
         }
     },
     defaultCooldown: {
@@ -44,6 +43,12 @@ const pool = mysql.createPool({
 
 global.dbPool = pool.promise();
 global.client = client;
+
+// Query DB for the languages
+const langQuery = await DB(`SELECT * FROM languages`, [], true);
+// Add the object to the container
+container.languageList = langQuery[0];
+
 
 const main = async () => {
     try {

@@ -1,13 +1,28 @@
 import { Listener, container } from '@sapphire/framework';
-import { Time } from "@sapphire/time-utilities";
+/* import { Time } from "@sapphire/time-utilities"; */
 import { blue, gray, green, magenta, magentaBright, white, yellow, redBright, red } from 'colorette';
+import { DB } from '#lib/functions';
 
 const environmentType = process.env.NODE_ENV === 'DEVELOPMENT';
 const llc = environmentType ? magentaBright : white;
 const blc = environmentType ? magenta : blue;
+container.color = {
+    PASTEL_GREEN: 0x87de7f,
+    CHERRY_RED: 0x8e3741,
+    BLURPLE: 0x5865F2,
+    BLURPLE_CLASSIC: 0x7289DA,
+    GREYPLE: 0x99AAB5,
+    DARK_BUT_NOT_BLACK: 0x2C2F33,
+    NOT_QUITE_BLACK: 0x23272A
+}
+
+container.emoji = {
+    POSITIVE: '<:positive:1017154150464753665>',
+    NEGATIVE: '<:negative:1017154192525250590>',
+    NEUTRAL: '<:neutral:1017154199735259146>'
+}
 
 export class ReadyEvent extends Listener {
-
     constructor(context, options = {}) {
         super(context, {
             ...options,
@@ -17,30 +32,11 @@ export class ReadyEvent extends Listener {
     }
 
     async run() {
-        container.color = {
-            PASTEL_GREEN: 0x87de7f,
-            CHERRY_RED: 0x8e3741,
-            BLURPLE: 0x5865F2,
-            BLURPLE_CLASSIC: 0x7289DA,
-            GREYPLE: 0x99AAB5,
-            DARK_BUT_NOT_BLACK: 0x2C2F33,
-            NOT_QUITE_BLACK: 0x23272A
-        }
-
-        container.emoji = {
-            POSITIVE: '<:positive:1017154150464753665>',
-            NEGATIVE: '<:negative:1017154192525250590>',
-            NEUTRAL: '<:neutral:1017154199735259146>'
-        }
-
         this.printBanner();
         this.printStoreDebugInformation();
         await this.setStatus();
     }
 
-    /**
-     * Sets the bot's status.
-     */
     async setStatus() {
         // Change the status every 60s because it can reset whenever discord feels like it
         // Uncomment the setTimeout below to change the status, if the default online isnt what we settle on
@@ -50,15 +46,8 @@ export class ReadyEvent extends Listener {
         await client.user.setActivity('/help', { type: 'WATCHING' })
     }
 
-    /**
-     * Prints a magenta (DEVELOPMENT) or blue (PRODUCTION) info banner depending on the NODE_ENV.
-    */
     async printBanner() {
-        client.logger.info(String.raw`
-[${green('+')}] Gateway online
-${environmentType ? `${blc('</>') + llc(` ${process.env.NODE_ENV} ENVIRONMENT`)}` : 'PRODUCTION ENVIRONMENT'}
-${llc(`v${process.env.VERSION}`)}`.trim()
-        );
+        client.logger.info(String.raw`[${green('+')}] Gateway online\n${environmentType ? `${blc('</>') + llc(` ${process.env.NODE_ENV} ENVIRONMENT`)}` : 'PRODUCTION ENVIRONMENT'}\n${llc(`v${process.env.VERSION}`)}`.trim());
 
         const connectionSuccess = `Connected to database ${green(process.env.DB_NAME)} on ${llc(process.env.DB_HOST)}:${blc(process.env.DB_PORT)}`;
         const connectionFailure = `Failed to connect to database ${redBright(process.env.DB_NAME)} on ${redBright(process.env.DB_HOST)}:${red(process.env.DB_PORT)}`;
@@ -66,9 +55,6 @@ ${llc(`v${process.env.VERSION}`)}`.trim()
         this.container.logger.info(statusString)
     }
 
-    /**
-     * Prints the loaded stores.
-    */
     printStoreDebugInformation() {
         const { client, logger } = this.container;
         const stores = [...client.stores.values()];
@@ -80,9 +66,6 @@ ${llc(`v${process.env.VERSION}`)}`.trim()
         logger.info(this.styleStore(last, '└─'));
     }
 
-    /**
-     * Helper function for styling the store name.
-     */
     style = environmentType ? yellow : blue;
 
     /**
