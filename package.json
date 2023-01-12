@@ -8,7 +8,7 @@
     "dev": "nodemon --enable-source-maps --experimental-json-modules -L --watch src",
     "start": "node --enable-source-maps --experimental-json-modules src/index.js"
   },
-  "author": "BluePotatoBP, Xavons, JBTech",
+  "author": "BluePotatoBP, ThisTim, JBTech",
   "license": "ISC",
   "imports": {
     "#lib/*": "./src/lib/*.js",
@@ -25,7 +25,7 @@
     "@sapphire/plugin-logger": "next",
     "@sapphire/plugin-subcommands": "^3.2.3",
     "@sapphire/time-utilities": "^1.7.5",
-    "canvas": "^2.10.1",
+    "canvas": "^2.11.0",
     "common-tags": "^1.8.2",
     "discord.js": "^13.10.3",
     "dotenv": "^16.0.1",
