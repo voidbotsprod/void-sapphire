@@ -1,8 +1,7 @@
 import { resolveKey } from '@sapphire/plugin-i18next';
 import { Command, CommandOptionsRunTypeEnum } from '@sapphire/framework';
 import { capitalize } from '#lib/functions';
-
-import { MessageEmbed } from "discord.js";
+import { EmbedBuilder } from 'discord.js';
 
 export class HelpCommand extends Command {
     constructor(context, options) {
@@ -47,7 +46,7 @@ export class HelpCommand extends Command {
         // Trying to find the command from args
         const command = this.container.stores.get("commands").get(args);
 
-        const successEmbed = new MessageEmbed()
+        const successEmbed = new EmbedBuilder()
             .setTitle(`${await resolveKey(interaction, 'help:SearchResult')} | ${command.name}`)
             .setDescription(`**${await resolveKey(interaction, 'help:CommandSuccessName')}:** ${command.name}\n**${await resolveKey(interaction, 'help:CommandSuccessDescription')}:** \`${command.description}\``)
             .setColor(this.container.color.PASTEL_GREEN)

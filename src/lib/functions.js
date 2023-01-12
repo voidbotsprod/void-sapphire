@@ -1,6 +1,6 @@
 import { RandomLoadingMessage } from '#lib/constants';
 import { container } from '@sapphire/framework';
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { isNullish, isNullishOrZero } from '@sapphire/utilities';
 
 /**
@@ -30,7 +30,6 @@ export function cutTo(input = 'error', from = 0, to = 250, ending = true) {
 */
 export function softWrap(input, length = 30) {
     const wrap = input.replace(new RegExp(`(?![^\\n]{1,${length}}$)([^\\n]{1,${length}})\\s`, 'g'), '$1\n');
-
     return wrap;
 }
 
@@ -57,10 +56,9 @@ export function pickRandom(array) {
  * @param Message The message to send the random response with.
  */
 export function sendLoadingMessage(interaction) {
-
     return interaction.reply({
         content: 'Successfully unregistered all **guild** application commands.\nYou will need to update the idHints after the next start.',
-        embeds: [new MessageEmbed().setDescription(pickRandom(RandomLoadingMessage)).setColor(container.color.GREYPLE)],
+        embeds: [new EmbedBuilder().setDescription(pickRandom(RandomLoadingMessage)).setColor(container.color.GREYPLE)],
         ephemeral: true,
         fetchReply: false
     });
@@ -135,7 +133,7 @@ export function greyscale(ctx, x, y, width, height) {
  */
 export function contrast(ctx, x, y, width, height, multiplier = 10) {
     const data = ctx.getImageData(x, y, width, height);
-    const factor = (multiplier*10 / 100);
+    const factor = (multiplier * 10 / 100);
     const intercept = 128 * (1 - factor);
     for (let i = 0; i < data.data.length; i += 4) {
         data.data[i] = (data.data[i] * factor) + intercept;
@@ -150,7 +148,7 @@ export function contrast(ctx, x, y, width, height, multiplier = 10) {
      * Checks wether the user exists in our database.
      * @param interaction The interaction to use.
      */
- export async function checkIfUserExists(interaction) {
+export async function checkIfUserExists(interaction) {
     // check if user exists in database
     const result = await DB(`SELECT * FROM users WHERE Id = ?`, [interaction.user.id])
     // if user does not exist return false
@@ -174,7 +172,7 @@ export async function checkIfGuildExists(interaction) {
  */
 export async function insertUser(interaction) {
     // insert user into database
-    await DB(`INSERT INTO users (Id, UserStatsId, Coins) VALUES (?, ?, ?)`, [interaction.user.id, null, 0]);
+    await DB(`INSERT INTO users (Id, Coins, Xp) VALUES (?, ?, ?)`, [interaction.user.id, 0, 0]);
 }
 
 /**

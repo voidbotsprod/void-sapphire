@@ -1,6 +1,5 @@
 import { Command } from '@sapphire/framework';
 import { stripIndents } from 'common-tags'
-
 import Board from '#lib/board';
 
 export class TestCommand extends Command {
@@ -27,17 +26,20 @@ export class TestCommand extends Command {
     async chatInputRun(interaction) {
 
         const TestBoard = new Board()
-        const test = await TestBoard.create(interaction, 'global', interaction.guild.id, 100, 100, null)
+        const test = await TestBoard.create(interaction, 'guild', interaction.guild.id, "Test 4.5", "Cool description 4", 540, 630, null)
 
         await interaction.reply({
             content: stripIndents`
-            ${await test.existed ? '**Board info:**\n' : '**Created new board:**\n'}
-            ID: ${await test.Id}
-            Type: ${await test.BoardTypeId}
-            Guild: ${await test.GuildId}
-            Size: ${await test.SizeX}x${await test.SizeY}
-            Created At: ${await test.CreatedAt}
-            Expires At: ${await test.ExpireAt ? test.ExpireAt : 'Never'}`
+            ${test.existed ? '**Board info:**\n' : '**Created new board:**\n'}
+            ID: \`${test.Id}\`
+            Type: \`${test.BoardTypeId === 1 ? 'Global' : 'Guild'}\`
+            Guild: \`${test.GuildId}\`
+            Name: \`${test.Name}\`
+            Description: \`${test.Description}\`
+            Size: \`${test.SizeX}x${test.SizeY}\`
+            Created At: \`${test.CreatedAt}\`
+            Expires At: \`${test.ExpireAt ? test.ExpireAt : 'Never'}\`
+            `
         })
 
     }

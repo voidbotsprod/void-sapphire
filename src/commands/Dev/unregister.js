@@ -1,7 +1,6 @@
 import { Subcommand } from '@sapphire/plugin-subcommands';
 
-import { REST } from '@discordjs/rest';
-import { Routes } from 'discord-api-types/v9';
+import { REST, Routes } from 'discord.js';
 
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 

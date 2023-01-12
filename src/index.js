@@ -1,12 +1,13 @@
 import '#lib/setup';
 import { BucketScope, LogLevel, SapphireClient } from '@sapphire/framework';
+import { GatewayIntentBits } from 'discord.js';
 import '@sapphire/plugin-i18next/register';
 import { Time } from "@sapphire/time-utilities";
 import mysql from "mysql2";
 import { DB } from '#lib/functions';
 
 const client = new SapphireClient({
-    intents: ['GUILDS', 'GUILD_MESSAGES', 'GUILD_MEMBERS'],
+    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers],
     i18n: {
         fetchLanguage: async (context) => {
             const defaultLanguage = 'en-US';
