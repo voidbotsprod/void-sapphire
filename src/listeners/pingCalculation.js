@@ -24,7 +24,13 @@ export class ReadyEvent extends Listener {
         await DB(`INSERT INTO ping (PingedAt) VALUES (?)`, [Date.now()]);
 
         const pingedAtTime = await DB(`SELECT PingedAt FROM ping`);
-        const dbPing = Date.now() - pingedAtTime.PingedAt;
+        
+        let dbPing;
+        if(pingedAtTime) {
+            dbPing = Date.now() - pingedAtTime.PingedAt;
+        } else {
+            dbPing = -1;
+        }
 
         container.lastPing = dbPing;
         await DB(`TRUNCATE TABLE ping`);
