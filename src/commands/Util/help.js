@@ -1,7 +1,7 @@
-import { resolveKey } from '@sapphire/plugin-i18next';
 import { Command, CommandOptionsRunTypeEnum } from '@sapphire/framework';
 import { capitalize } from '#lib/functions';
 import { EmbedBuilder } from 'discord.js';
+import languagePassthrough from '#lib/languagePassthrough';
 
 export class HelpCommand extends Command {
     constructor(context, options) {
@@ -47,8 +47,8 @@ export class HelpCommand extends Command {
         const command = this.container.stores.get("commands").get(args);
 
         const successEmbed = new EmbedBuilder()
-            .setTitle(`${await resolveKey(interaction, 'help:SearchResult')} | ${command.name}`)
-            .setDescription(`**${await resolveKey(interaction, 'help:CommandSuccessName')}:** ${command.name}\n**${await resolveKey(interaction, 'help:CommandSuccessDescription')}:** \`${command.description}\``)
+            .setTitle(`${await languagePassthrough(interaction, 'help:SearchResult')} | ${command.name}`)
+            .setDescription(`**${await languagePassthrough(interaction, 'help:CommandSuccessName')}:** ${command.name}\n**${await languagePassthrough(interaction, 'help:CommandSuccessDescription')}:** \`${command.description}\``)
             .setColor(this.container.color.PASTEL_GREEN)
 
         return await interaction.reply({ embeds: [successEmbed], ephemeral: true })

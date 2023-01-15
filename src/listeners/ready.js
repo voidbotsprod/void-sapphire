@@ -1,6 +1,6 @@
 import { Listener, container } from '@sapphire/framework';
-/* import { Time } from "@sapphire/time-utilities"; */
 import { blue, gray, green, magenta, magentaBright, white, yellow, redBright, red } from 'colorette';
+import mysql from "mysql2";
 import { DB } from '#lib/functions';
 
 const environmentType = process.env.NODE_ENV === 'DEVELOPMENT';
@@ -15,7 +15,6 @@ container.color = {
     DARK_BUT_NOT_BLACK: 0x2C2F33,
     NOT_QUITE_BLACK: 0x23272A
 }
-
 container.emoji = {
     POSITIVE: '<:positive:1017154150464753665>',
     NEGATIVE: '<:negative:1017154192525250590>',
@@ -32,22 +31,56 @@ export class ReadyEvent extends Listener {
     }
 
     async run() {
+        const pool = mysql.createPool({
+            host: process.env.DB_HOST,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASS,
+            database: process.env.DB_NAME,
+            port: process.env.DB_PORT,
+            waitForConnections: true,
+            connectionLimit: 10,
+            queueLimit: 0
+        });
+
+        global.dbPool = pool.promise();
+        global.guildLanguages = [];
+        global.languageList = [];
+
+        try {
+            const startTime = Date.now()
+            for (const guild of client.guilds.cache) {
+                const lang = await DB(`SELECT * FROM guilds WHERE Id = ?`, [guild[0]]);
+                const languageId = await lang ? 1 : await lang.LanguageId;
+
+                guildLanguages.push({
+                    guildId: guild[0],
+                    languageId: languageId
+                })
+            }
+            const endTime = Date.now()
+            client.logger.info(String.raw`Loaded ${green("language")} cache in ${green(endTime - startTime + "ms")}.`.trim());
+        } catch (error) {
+            console.log(error)
+        }
+
+        try {
+            const [langQuery] = await DB(`SELECT * FROM languages`, [], true);
+            languageList = await langQuery;
+        } catch (error) {
+            console.log(error)
+        }
+
         this.printBanner();
         this.printStoreDebugInformation();
         await this.setStatus();
     }
 
     async setStatus() {
-        // Change the status every 60s because it can reset whenever discord feels like it
-        // Uncomment the setTimeout below to change the status, if the default online isnt what we settle on
-        /* setTimeout(() => {
-            client.user.setStatus('dnd'); // dnd, idle, online, invisible
-        }, Time.Second * 60); */
         await client.user.setActivity('/help', { type: 'WATCHING' })
     }
 
     async printBanner() {
-        client.logger.info(String.raw`[${green('+')}] Gateway online\n${environmentType ? `${blc('</>') + llc(` ${process.env.NODE_ENV} ENVIRONMENT`)}` : 'PRODUCTION ENVIRONMENT'}\n${llc(`v${process.env.VERSION}`)}`.trim());
+        client.logger.info(`[${green('+')}] Gateway online\n${environmentType ? `${blc('</>') + llc(` ${process.env.NODE_ENV} ENVIRONMENT`)}` : 'PRODUCTION ENVIRONMENT'}\n${llc(`v${process.env.VERSION}`)}`.trim());
 
         const connectionSuccess = `Connected to database ${green(process.env.DB_NAME)} on ${llc(process.env.DB_HOST)}:${blc(process.env.DB_PORT)}`;
         const connectionFailure = `Failed to connect to database ${redBright(process.env.DB_NAME)} on ${redBright(process.env.DB_HOST)}:${red(process.env.DB_PORT)}`;
@@ -66,8 +99,6 @@ export class ReadyEvent extends Listener {
         logger.info(this.styleStore(last, '└─'));
     }
 
-    style = environmentType ? yellow : blue;
-
     /**
      * Adds a symbol before a loaded store.
      * @param {Store} store The store that got loaded.
@@ -75,6 +106,7 @@ export class ReadyEvent extends Listener {
      * @returns {string} The styled string to print.
      */
     styleStore(store, prefix) {
-        return gray(`${prefix} Loaded ${this.style(store.size.toString().padEnd(3, ' '))} ${store.name}.`);
+        const style = environmentType ? yellow : blue;
+        return gray(`${prefix} Loaded ${style(store.size.toString().padEnd(3, ' '))} ${store.name}.`);
     }
 }
