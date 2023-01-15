@@ -1,17 +1,17 @@
 {
-    "help:SearchResult": "Search Result",
-    "help:CommandSuccessName": "Name",
-    "help:CommandSuccessDescription": "Description",
+    "help:SearchResult": "Search Result  | %COMMAND_NAME%",
+    "help:CommandSuccessName": "**Name:** `%COMMAND_NAME%`",
+    "help:CommandSuccessDescription": "**Description:** `%COMMAND_DESCRIPTION%`",
 
     "language:languageNameLocalized": "English",
     "language:LanguageReset": "Your servers language has been set back to `English`.",
-    "language:LanguageSet": "Your servers language has been set to",
-    "language:NotChanged": "Nothing changed, your servers language was already set to",
-    "language:CurrentLanguage": "Your servers current language is",
+    "language:LanguageSet": "Your servers language has been set to%NOTE- this will be set to language:languageNameLocalized%",
+    "language:NotChanged": "Nothing changed, your servers language was already set to%NOTE- same as above%",
+    "language:CurrentLanguage": "Your servers current language is%NOTE- same as above%",
 
     "ping:Pinging": "Doing funny stuff...",
-    "ping:BotToApi": "Bot to API",
-    "ping:MessageRT": "Message Round Trip",
-    "ping:DatabaseRT": "Database Round Trip",
+    "ping:BotToApi": "**Bot to API:** %PING_BOT_TO_API%ms",
+    "ping:MessageRT": "**Message Round Trip:** %PING_MESSAGE_RT%ms",
+    "ping:DatabaseRT": "**Database Round Trip:** %PING_DATABASE_RT%ms",
     "ping:Failed": "Failed to retrieve ping!"
 }

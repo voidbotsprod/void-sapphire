@@ -47,8 +47,8 @@ export class HelpCommand extends Command {
         const command = this.container.stores.get("commands").get(args);
 
         const successEmbed = new EmbedBuilder()
-            .setTitle(`${await languagePassthrough(interaction, 'help:SearchResult')} | ${command.name}`)
-            .setDescription(`**${await languagePassthrough(interaction, 'help:CommandSuccessName')}:** ${command.name}\n**${await languagePassthrough(interaction, 'help:CommandSuccessDescription')}:** \`${command.description}\``)
+            .setTitle(await languagePassthrough(interaction, 'help:SearchResult', { "%COMMAND_NAME%": command.name }))
+            .setDescription(`${await languagePassthrough(interaction, 'help:CommandSuccessName', { "%COMMAND_NAME%": command.name })}\n${await languagePassthrough(interaction, 'help:CommandSuccessDescription', { "%COMMAND_DESCRIPTION%": command.description })}`)
             .setColor(this.container.color.PASTEL_GREEN)
 
         return await interaction.reply({ embeds: [successEmbed], ephemeral: true })

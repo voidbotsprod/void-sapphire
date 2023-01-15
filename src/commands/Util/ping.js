@@ -37,11 +37,11 @@ export class PingCommand extends Command {
             const rtPing = await msg.createdTimestamp - interaction.createdTimestamp
             const dbPing = container.lastPing;
 
-            const ping_BotToApi = await languagePassthrough(interaction, 'ping:BotToApi')
-            const ping_MessageRT = await languagePassthrough(interaction, 'ping:MessageRT')
-            const ping_DatabaseRT = await languagePassthrough(interaction, 'ping:DatabaseRT')
+            const ping_BotToApi = await languagePassthrough(interaction, 'ping:BotToApi', { "%PING_BOT_TO_API%": clientPing })
+            const ping_MessageRT = await languagePassthrough(interaction, 'ping:MessageRT', { "%PING_MESSAGE_RT%": rtPing })
+            const ping_DatabaseRT = await languagePassthrough(interaction, 'ping:DatabaseRT', { "%PING_DATABASE_RT%": dbPing })
 
-            const formatted = `🏓 Pong!\n\n**${ping_BotToApi}:** ${clientPing}ms\n**${ping_MessageRT}:** ${rtPing}ms\n**${ping_DatabaseRT}:** ${dbPing}ms`;
+            const formatted = `🏓 Pong!\n\n${ping_BotToApi}\n${ping_MessageRT}\n${ping_DatabaseRT}`;
 
             return await interaction.editReply({ content: formatted }).catch((e) => { console.log(e) });
         } catch (error) {
