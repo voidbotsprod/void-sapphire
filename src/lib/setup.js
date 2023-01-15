@@ -36,7 +36,7 @@ global.languageList = [];
 
 try {
     const startTime = Date.now()
-    for (const guild of client.guilds.cache) {
+    for (const guild of container.client.guilds.cache) {
         const lang = await DB(`SELECT * FROM guilds WHERE Id = ?`, [guild[0]]);
         const languageId = await lang ? 1 : await lang.LanguageId;
 
