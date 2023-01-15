@@ -31,32 +31,7 @@ global.dbPool = pool.promise();
 //#endregion
 
 //#region Setup Languages
-global.guildLanguages = [];
-global.languageList = [];
 
-try {
-    const startTime = Date.now()
-    for (const guild of container.client.guilds.cache) {
-        const lang = await DB(`SELECT * FROM guilds WHERE Id = ?`, [guild[0]]);
-        const languageId = await lang ? 1 : await lang.LanguageId;
-
-        guildLanguages.push({
-            guildId: guild[0],
-            languageId: languageId
-        })
-    }
-    const endTime = Date.now()
-    client.logger.info(String.raw`Loaded ${green("language")} cache in ${green(endTime - startTime + "ms")}.`.trim());
-} catch (error) {
-    console.log(error)
-}
-
-try {
-    const [langQuery] = await DB(`SELECT * FROM languages`, [], true);
-    languageList = await langQuery;
-} catch (error) {
-    console.log(error)
-}
 //#endregion
 
 //#region Container Constants

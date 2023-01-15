@@ -1,5 +1,7 @@
 import { Listener, container } from '@sapphire/framework';
 import { blue, gray, green, magenta, magentaBright, white, yellow, redBright, red } from 'colorette';
+import mysql from 'mysql2';
+import { DB } from '#lib/functions';
 
 const environmentType = process.env.NODE_ENV === 'DEVELOPMENT';
 const llc = environmentType ? magentaBright : white;
@@ -15,17 +17,44 @@ export class ReadyEvent extends Listener {
 	}
 
 	async run() {
+		global.guildLanguages = [];
+		global.languageList = [];
+
+		try {
+			const startTime = Date.now();
+			for (const guild of this.container.client.guilds.cache) {
+				const lang = await DB(`SELECT * FROM guilds WHERE Id = ?`, [guild[0]]);
+				const languageId = (await lang) ? 1 : await lang.LanguageId;
+
+				guildLanguages.push({
+					guildId: guild[0],
+					languageId: languageId
+				});
+			}
+			const endTime = Date.now();
+			this.container.client.logger.info(String.raw`Loaded ${green('language')} cache in ${green(endTime - startTime + 'ms')}.`.trim());
+		} catch (error) {
+			console.log(error);
+		}
+
+		try {
+			const [langQuery] = await DB(`SELECT * FROM languages`, [], true);
+			languageList = await langQuery;
+		} catch (error) {
+			console.log(error);
+		}
+
 		this.printBanner();
 		this.printStoreDebugInformation();
 		await this.setStatus();
 	}
 
 	async setStatus() {
-		await client.user.setActivity('/help', { type: 'WATCHING' });
+		await this.container.client.user.setActivity('/help', { type: 'WATCHING' });
 	}
 
 	async printBanner() {
-		client.logger.info(
+		this.container.client.logger.info(
 			`[${green('+')}] Gateway online\n${environmentType ? `${blc('</>') + llc(` ${process.env.NODE_ENV} ENVIRONMENT`)}` : 'PRODUCTION ENVIRONMENT'}\n${llc(`v${process.env.VERSION}`)}`.trim()
 		);
 
@@ -35,18 +64,17 @@ export class ReadyEvent extends Listener {
 			.getConnection()
 			.then(() => connectionSuccess)
 			.catch(() => connectionFailure);
-		this.container.logger.info(statusString);
+		this.container.client.logger.info(statusString);
 	}
 
 	printStoreDebugInformation() {
-		const { client, logger } = this.container;
-		const stores = [...client.stores.values()];
+		const stores = [...this.container.client.stores.values()];
 		const first = stores.shift();
 		const last = stores.pop();
 
-		logger.info(this.styleStore(first, '┌─'));
-		for (const store of stores) logger.info(this.styleStore(store, '├─'));
-		logger.info(this.styleStore(last, '└─'));
+		this.container.client.logger.info(this.styleStore(first, '┌─'));
+		for (const store of stores) this.container.client.logger.info(this.styleStore(store, '├─'));
+		this.container.client.logger.info(this.styleStore(last, '└─'));
 	}
 
 	/**
