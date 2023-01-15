@@ -1,6 +1,6 @@
 import { Command, CommandOptionsRunTypeEnum, container } from '@sapphire/framework';
-import { resolveKey } from '@sapphire/plugin-i18next';
 import { isMessageInstance } from "@sapphire/discord.js-utilities";
+import languagePassthrough from '#lib/languagePassthrough';
 
 export class PingCommand extends Command {
     constructor(context, options) {
@@ -27,25 +27,27 @@ export class PingCommand extends Command {
     async chatInputRun(interaction) {
         // Send initial message and fetch it so we can access the sent message.
         const msg = await interaction.reply({
-            content: await resolveKey(interaction, 'ping:Pinging'),
+            content: await languagePassthrough(interaction, 'ping:Pinging'),
             fetchReply: true
         }).catch(() => { });
 
         // Check if the interaction is a message and not an APImessage
-        if (isMessageInstance(msg)) {
+        try {
             const clientPing = Math.round(await client.ws.ping);
-            const rtPing = msg.createdTimestamp - interaction.createdTimestamp
+            const rtPing = await msg.createdTimestamp - interaction.createdTimestamp
             const dbPing = container.lastPing;
 
-            const ping_BotToApi = await resolveKey(msg, 'ping:BotToApi')
-            const ping_MessageRT = await resolveKey(msg, 'ping:MessageRT')
-            const ping_DatabaseRT = await resolveKey(msg, 'ping:DatabaseRT')
+            const ping_BotToApi = await languagePassthrough(interaction, 'ping:BotToApi')
+            const ping_MessageRT = await languagePassthrough(interaction, 'ping:MessageRT')
+            const ping_DatabaseRT = await languagePassthrough(interaction, 'ping:DatabaseRT')
 
             const formatted = `🏓 Pong!\n\n**${ping_BotToApi}:** ${clientPing}ms\n**${ping_MessageRT}:** ${rtPing}ms\n**${ping_DatabaseRT}:** ${dbPing}ms`;
 
-            return await interaction.editReply({ content: formatted }).catch(() => { });
+            return await interaction.editReply({ content: formatted }).catch((e) => { console.log(e) });
+        } catch (error) {
+            console.log(error)
+            // If the interaction is not a message, return error message
+            return await interaction.reply({ content: await languagePassthrough(interaction, 'ping:Failed'), ephemeral: true }).catch((e) => { console.log(e) });
         }
-        // If the interaction is not a message, return error message
-        return await interaction.reply({ content: await resolveKey(interaction, 'ping:Failed'), ephemeral: true }).catch(() => { });
     }
 }
