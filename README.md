@@ -1,8 +1,6 @@
-
 <h2>VOID</h2>
 
 VOID is a Discord bot written in JS using [Discord.JS](https://discord.js.org/#/) and [Sapphire](https://www.sapphirejs.dev/)
-
 
 ## Run Locally
 
@@ -30,7 +28,6 @@ Start the bot
   npm run dev
 ```
 
-
 ## Environment Variables
 
 To run the bot, you will need to create a .env file with the following environment variables inside:
@@ -53,8 +50,6 @@ To run the bot, you will need to create a .env file with the following environme
 
 `DB_PORT=`
 
-
 ## Feedback/Support
 
 If you have any feedback or support, please join our discord server here. (coming soon)
-

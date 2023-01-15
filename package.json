@@ -1,43 +1,43 @@
 {
-  "name": "void",
-  "version": "1.0.0",
-  "description": "",
-  "type": "module",
-  "main": "src/index.js",
-  "scripts": {
-    "dev": "nodemon -L --watch src",
-    "start": "node src/index.js"
-  },
-  "author": "BluePotatoBP, Xavons, JBTech",
-  "license": "GNU3",
-  "imports": {
-    "#lib/*": "./src/lib/*.js",
-    "#models/*": "./src/models/*.js"
-  },
-  "dependencies": {
-    "@napi-rs/canvas": "^0.1.33",
-    "@sapphire/discord-utilities": "^3.0.0",
-    "@sapphire/discord.js-utilities": "^6.0.0",
-    "@sapphire/fetch": "^2.4.1",
-    "@sapphire/framework": "^4.0.1",
-    "@sapphire/plugin-api": "^5.0.0",
-    "@sapphire/plugin-logger": "3.0.1",
-    "@sapphire/plugin-subcommands": "^4.0.0",
-    "@sapphire/time-utilities": "^1.7.8",
-    "approximate-number": "^2.1.0",
-    "common-tags": "^1.8.2",
-    "discord-api-types": "^0.37.27",
-    "discord.js": "^14.7.1",
-    "dotenv": "^16.0.1",
-    "get-pixels": "^3.3.3",
-    "moment": "^2.29.4",
-    "mysql2": "^2.3.3",
-    "paste.gg": "^1.0.5",
-    "quantize": "^1.0.2",
-    "undici": "^5.15.0"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.19",
-    "npm-run-all": "^4.1.5"
-  }
+	"name": "void",
+	"version": "1.0.0",
+	"description": "",
+	"type": "module",
+	"main": "src/index.js",
+	"scripts": {
+		"dev": "nodemon -L --watch src",
+		"start": "node src/index.js"
+	},
+	"author": "BluePotatoBP, Xavons, JBTech",
+	"license": "GNU3",
+	"imports": {
+		"#lib/*": "./src/lib/*.js",
+		"#models/*": "./src/models/*.js"
+	},
+	"dependencies": {
+		"@napi-rs/canvas": "^0.1.33",
+		"@sapphire/discord-utilities": "^3.0.0",
+		"@sapphire/discord.js-utilities": "^6.0.0",
+		"@sapphire/fetch": "^2.4.1",
+		"@sapphire/framework": "^4.0.1",
+		"@sapphire/plugin-api": "^5.0.0",
+		"@sapphire/plugin-logger": "3.0.1",
+		"@sapphire/plugin-subcommands": "^4.0.0",
+		"@sapphire/time-utilities": "^1.7.8",
+		"approximate-number": "^2.1.0",
+		"common-tags": "^1.8.2",
+		"discord-api-types": "^0.37.27",
+		"discord.js": "^14.7.1",
+		"dotenv": "^16.0.1",
+		"get-pixels": "^3.3.3",
+		"moment": "^2.29.4",
+		"mysql2": "^2.3.3",
+		"paste.gg": "^1.0.5",
+		"quantize": "^1.0.2",
+		"undici": "^5.15.0"
+	},
+	"devDependencies": {
+		"nodemon": "^2.0.19",
+		"npm-run-all": "^4.1.5"
+	}
 }

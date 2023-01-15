@@ -1,7 +1,7 @@
 {
-    "Pinging": "Mache Dinge...",
-    "BotToApi": "Bot zu API",
-    "MessageRT": "Nachrichten Round Trip",
-    "DatabaseRT": "Datenbank Round Trip",
-    "Failed": "Ping konnte nicht abgerufen werden!"
+	"Pinging": "Mache Dinge...",
+	"BotToApi": "Bot zu API",
+	"MessageRT": "Nachrichten Round Trip",
+	"DatabaseRT": "Datenbank Round Trip",
+	"Failed": "Ping konnte nicht abgerufen werden!"
 }

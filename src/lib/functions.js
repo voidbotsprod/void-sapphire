@@ -91,7 +91,7 @@ export function isRateLimited({ time, request, response, manager, auth = false }
 
 /**
  * Main function for accessing the database
- * 
+ *
  * @param {string} query The query to use
  * @param {Array<Object>} data The data to search through
  * @param {boolean} raw Should the result be unformatted?
@@ -102,7 +102,9 @@ export async function DB(query, data, raw = false) {
 		const result = await dbPool.execute(query, data);
 		if (raw) return result;
 		return result[0][0];
-	} catch (err) {() => {};};
+	} catch (err) {
+		() => {};
+	}
 }
 
 /**
