@@ -20,11 +20,11 @@ export class ReadyEvent extends Listener {
 		global.guildLanguages = [];
 		global.languageList = [];
 
-		try {
-			const startTime = Date.now();
-			for (const guild of this.container.client.guilds.cache) {
-				const lang = await DB(`SELECT * FROM guilds WHERE Id = ?`, [guild[0]]);
-				const languageId = (await lang) ? 1 : await lang.LanguageId;
+        try {
+            const startTime = Date.now()
+            for (const guild of client.guilds.cache) {
+                const lang = await DB(`SELECT * FROM guilds WHERE Id = ?`, [guild[0]]);
+                const languageId = await lang === undefined ? 1 : await lang.LanguageId;
 
 				guildLanguages.push({
 					guildId: guild[0],

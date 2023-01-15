@@ -73,35 +73,29 @@ export class LanguageCommand extends Subcommand {
     }
 
     async setLanguage(interaction, reset = false, embed) {
-        console.log("got here 1")
         // Get data from db
         await DB(`SELECT * FROM guilds WHERE Id = '${interaction.guild.id}'`).then(async (result) => {
-            console.log("got here 2")
-
             const inputLang = interaction.options.getString('language');
             // If the guild doesnt exist for some reason, add it
-            if (!result.Id) await DB(`INSERT INTO guilds (Id, LanguageId) VALUES ('${interaction.guild.id}', ${await this.findLangId(inputLang)})`);
+            if (!result.Id) {
+                await DB(`INSERT INTO guilds (Id, LanguageId) VALUES ('${interaction.guild.id}', ${inputLang})`)
+                guildLanguages.push({ guildId: interaction.guild.id, languageId: inputLang });
+            };
             // If the guild exists, update the language
-            console.log("got here 2")
-
             if (reset) {
-                console.log("got here 3")
-
                 await DB(`UPDATE guilds SET LanguageId = 1 WHERE Id = '${interaction.guild.id}'`);
+                guildLanguages.find(c => c.guildId === interaction.guild.id).languageId = 1;
+
                 embed.setDescription(await languagePassthrough(interaction, `language:LanguageReset`))
-                console.log("got here 4")
 
                 return await interaction.reply({ embeds: [embed] });
             } else {
-                console.log("got here 5")
-
                 embed.setDescription(`${await languagePassthrough(interaction, "language:NotChanged")} \`${await languagePassthrough(interaction, "language:languageNameLocalized")}\`.`)
-                if (result.LanguageId === await this.findLangId(inputLang)) return await interaction.reply({ embeds: [embed] });
-                console.log("got here 6")
+                if (result.LanguageId === inputLang) return await interaction.reply({ embeds: [embed] });
 
-                await DB(`UPDATE guilds SET LanguageId = ${await this.findLangId(inputLang)} WHERE Id = '${interaction.guild.id}'`);
+                await DB(`UPDATE guilds SET LanguageId = ${inputLang} WHERE Id = '${interaction.guild.id}'`);
+                guildLanguages.find(c => c.guildId === interaction.guild.id).languageId = inputLang;
                 embed.setDescription(`${await languagePassthrough(interaction, "language:LanguageSet")} \`${await languagePassthrough(interaction, "language:languageNameLocalized")}\`!`)
-                console.log("got here 7")
 
                 return await interaction.reply({ embeds: [embed] });
             }
@@ -112,23 +106,13 @@ export class LanguageCommand extends Subcommand {
         // Get data from db
         await DB(`SELECT LanguageId FROM guilds WHERE Id = '${interaction.guild.id}'`).then(async (result) => {
             // If the guild doesnt exist for some reason, add it
-            if (!result.LanguageId) await DB(`INSERT INTO guilds (Id, LanguageId) VALUES ('${interaction.guild.id}', 1)`);
+            if (!result.LanguageId) {
+                await DB(`INSERT INTO guilds (Id, LanguageId) VALUES ('${interaction.guild.id}', 1)`);
+                guildLanguages.push({ guildId: interaction.guild.id, languageId: 1 });
+            }
             embed.setDescription(`${await languagePassthrough(interaction, "language:CurrentLanguage")} \`${await languagePassthrough(interaction, "language:languageNameLocalized")}\`.`)
 
             return await interaction.reply({ embeds: [embed], ephemeral: true });
         });
-    }
-
-    /* findLangName(code) {
-        if (typeof code === "string") return container.languageList.find(c => c.Code === code).Name;
-        else if (typeof code === 'number') return container.languageList.find(c => c.Id === code).Name;
-        else return "Error"
-    } */
-
-    async findLangId(code) {
-        const langArray = Object.keys(await languageList).map(key => languageList[key]);
-        console.log(langArray)
-        if (langArray.length && typeof code === "string") return langArray.find(c => c.Code === code);
-        else return "Error"
     }
 }
