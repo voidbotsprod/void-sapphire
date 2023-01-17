@@ -6,8 +6,8 @@
     "language:languageNameLocalized": "Deutsch",
     "language:LanguageReset": "Die Sprache des Servers wurde auf `%LANGUAGE%` zurückgesetzt.",
     "language:LanguageSet": "Die Sprache des Servers wurde auf `%LANGUAGE%` gesetzt.",
-    "language:NotChanged": "Nichts hat sich verändert. Die Sprache des Servers war bereits %LANGUAGE%.",
-    "language:CurrentLanguage": "Die aktuelle Sprache des Servers ist %LANGUAGE%.",
+    "language:NotChanged": "Nichts hat sich verändert. `%LANGUAGE%` war bereits die Sprache des Servers.",
+    "language:CurrentLanguage": "Die aktuelle Sprache des Servers ist `%LANGUAGE%`.",
 
     "ping:Pinging": "Mache Dinge...",
     "ping:BotToApi": "**Bot zu API:** %PING_MESSAGE_RT%ms",
