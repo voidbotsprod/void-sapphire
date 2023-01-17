@@ -26,15 +26,18 @@ const pool = mysql.createPool({
 	connectionLimit: 10,
 	queueLimit: 0
 });
-
-global.dbPool = pool.promise();
 //#endregion
 
 //#region Setup Languages
 
 //#endregion
 
-//#region Container Constants
+//#region Container Constants and global vars
+global.dbPool = pool.promise();
+global.guildLanguages = [];
+global.languageList = [];
+
+
 container.color = {
 	PASTEL_GREEN: 0x87de7f,
 	CHERRY_RED: 0x8e3741,
