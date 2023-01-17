@@ -5,7 +5,7 @@
 
     "language:languageNameLocalized": "Hrvatski",
     "language:LanguageReset": "Jezik tvog servera je vracen na `Engleski`.",
-    "language:LanguageSet": "Jezik tvog servera postavljen je na%NOTE- this will be set to language:languageNameLocalized%",
+    "language:LanguageSet": "Jezik tvog servera postavljen je na `%LANGUAGE%`!%NOTE- this will be set to language:languageNameLocalized%",
     "language:NotChanged": "Nista se nije promjenilo, jezik tvog servera vec je postavljen na%NOTE- same as above%",
     "language:CurrentLanguage": "Trenutni jezik tvog servera je%NOTE- same as above%",
 
