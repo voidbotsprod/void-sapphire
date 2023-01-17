@@ -24,7 +24,9 @@ parentPort.on('message', async (message) => {
 			}
 		});
 		// Create directory if it doesn't exist
+		const basePath = 'src/boardCache';
 		const guildIdPath = `src/boardCache/${dirName}`;
+		if (!fs.existsSync(basePath)) fs.mkdirSync(basePath);
 		if (!fs.existsSync(guildIdPath)) fs.mkdirSync(guildIdPath);
 		// Write to file
 		const imageData = canvas.toBuffer('image/png');
