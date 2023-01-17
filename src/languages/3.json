@@ -4,10 +4,10 @@
     "help:CommandSuccessDescription": "**Deskripcija:** `%COMMAND_DESCRIPTION%`",
 
     "language:languageNameLocalized": "Hrvatski",
-    "language:LanguageReset": "Jezik tvog servera je vracen na `Engleski`.",
+    "language:LanguageReset": "Jezik tvog servera je vracen na `%LANGUAGE%`.",
     "language:LanguageSet": "Jezik tvog servera postavljen je na `%LANGUAGE%`!%NOTE- this will be set to language:languageNameLocalized%",
-    "language:NotChanged": "Nista se nije promjenilo, jezik tvog servera vec je postavljen na%NOTE- same as above%",
-    "language:CurrentLanguage": "Trenutni jezik tvog servera je%NOTE- same as above%",
+    "language:NotChanged": "Nista se nije promjenilo, jezik tvog servera vec je postavljen na %LANGUAGE%",
+    "language:CurrentLanguage": "Trenutni jezik tvog servera je %LANGUAGE%",
 
     "ping:Pinging": "Nesto radim...",
     "ping:BotToApi": "**Bot do APIa:** %PING_BOT_TO_API%ms",

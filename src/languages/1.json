@@ -4,10 +4,10 @@
     "help:CommandSuccessDescription": "**Description:** `%COMMAND_DESCRIPTION%`",
 
     "language:languageNameLocalized": "English%NOTE- replace with your language name localized, not English but in X language%",
-    "language:LanguageReset": "Your servers language has been set back to `English`.",
+    "language:LanguageReset": "Your servers language has been set back to `%LANGUAGE%`.",
     "language:LanguageSet": "Your servers language has been set to `%LANGUAGE%`!%NOTE- this will be set to language:languageNameLocalized%",
-    "language:NotChanged": "Nothing changed, your servers language was already set to%NOTE- same as above%",
-    "language:CurrentLanguage": "Your servers current language is%NOTE- same as above%",
+    "language:NotChanged": "Nothing changed, your servers language was already set to `%LANGUAGE%`",
+    "language:CurrentLanguage": "Your servers current language is `%LANGUAGE%`",
 
     "ping:Pinging": "Doing funny stuff...",
     "ping:BotToApi": "**Bot to API:** %PING_BOT_TO_API%ms",
