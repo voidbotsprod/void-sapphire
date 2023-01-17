@@ -13,7 +13,7 @@ import replaceOnce from 'replace-once';
 export default async (interaction, textCode, customVariables = {}) => {
 	// This is the ugliest code I've ever written
 	// Find guild language in cache
-	const guildLanguage = await guildLanguages.find((c) => c.guildId == interaction.guild.id);
+	const guildLanguage = await global.guildLanguages.find((c) => c.guildId == interaction.guild.id);
 	// Get language file
 	let languageFile;
 	let filePath;
@@ -41,5 +41,5 @@ export default async (interaction, textCode, customVariables = {}) => {
 	const translated = replaceOnce(textToTranslate, Object.keys(mergedVariables), Object.values(mergedVariables), "gmi")
 	// Return translated string
 
-	return await translated;
+	return translated;
 };
