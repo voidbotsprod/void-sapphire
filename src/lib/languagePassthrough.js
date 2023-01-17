@@ -1,5 +1,6 @@
 import { default as DEFAULT_VARIABLES } from './languageVariables.js';
 import fs from 'fs/promises';
+import replaceOnce from 'replace-once';
 
 /**
  * Function for language passthrough, replaces the text with the language specified
@@ -37,7 +38,7 @@ export default async (interaction, textCode, customVariables = {}) => {
 
 	// Replace variables
 	const textToTranslate = languageFile[textCode];
-	const translated = await Object.entries(mergedVariables).reduce((acc, [key, value]) => acc.replace(key, value), textToTranslate);
+	const translated = replaceOnce(textToTranslate, Object.keys(mergedVariables), Object.values(mergedVariables), "gmi")
 	// Return translated string
 
 	return await translated;
