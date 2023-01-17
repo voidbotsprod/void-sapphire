@@ -3,11 +3,11 @@
     "help:CommandSuccessName": "**Name:** `%COMMAND_NAME%`",
     "help:CommandSuccessDescription": "**Beschreibung:** `%COMMAND_DESCRIPTION%`",
 
-    "language:languageNameLocalized": "Englisch",
-    "language:LanguageReset": "Die Sprache des Servers wurde wieder auf `Englisch` gesetzt.",
-    "language:LanguageSet": "Die Sprache des Servers wurde auf Your servers language gesetzt.",
-    "language:NotChanged": "Nothing changed, your servers language was already set to",
-    "language:CurrentLanguage": "Your servers current language is",
+    "language:languageNameLocalized": "Deutsch",
+    "language:LanguageReset": "Die Sprache des Servers wurde auf %LANGUAGE% zurückgesetzt.",
+    "language:LanguageSet": "Die Sprache des Servers wurde auf %LANGUAGE% gesetzt.",
+    "language:NotChanged": "Nichts hat sich verändert. Die Sprache des Servers war bereits %LANGUAGE%.",
+    "language:CurrentLanguage": "Die aktuelle Sprache des Servers ist %LANGUAGE%.",
 
     "ping:Pinging": "Mache Dinge...",
     "ping:BotToApi": "Bot zu API",
