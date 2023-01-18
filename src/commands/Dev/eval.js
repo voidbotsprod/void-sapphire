@@ -41,9 +41,7 @@ export class Eval extends Command {
 
 		if (success && thenable) return result;
 
-		return interaction.reply({
-			content: `${result.length > 2000 ? await this.getPaste(result, code).catch((err) => codeBlock('js', err)) : codeBlock('js', result)}\n${time}`
-		});
+		return interaction.reply({ content: `${result.length > 2000 ? await this.getPaste(result, code).catch((err) => codeBlock('js', err)) : codeBlock('js', result)}\n${time}` });
 	}
 
 	/**
@@ -122,11 +120,7 @@ export class Eval extends Command {
 				files: [
 					{
 						name: 'eval.js',
-						content: {
-							format: 'text',
-							highlight_language: 'javascript',
-							value: text
-						}
+						content: { format: 'text', highlight_language: 'javascript', value: text }
 					}
 				]
 			});

@@ -45,7 +45,6 @@ export class LanguageCommand extends Subcommand {
 									.setDescription('Available languages')
 									.setRequired(true)
 									.addChoices({ name: 'English', value: '1' }, { name: 'German', value: '2' }, { name: 'Croatian', value: '3' });
-
 								return option;
 							})
 					)

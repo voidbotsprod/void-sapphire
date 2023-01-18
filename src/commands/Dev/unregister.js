@@ -77,9 +77,11 @@ export class UnregisterCommand extends Subcommand {
 	}
 
 	async chatInputRunGuild(interaction) {
-		rest.put(Routes.applicationGuildCommands(client.id, interaction.guild.id), {
-			body: []
-		}).catch(console.error);
+		rest
+			.put(Routes.applicationGuildCommands(client.id, interaction.guild.id), {
+				body: []
+			})
+			.catch(console.error);
 
 		return interaction.reply({
 			content: 'Successfully unregistered all **guild** application commands.\nYou will need to update the idHints after the next start.',
