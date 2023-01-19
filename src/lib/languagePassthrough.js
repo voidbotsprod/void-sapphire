@@ -38,7 +38,7 @@ export default async (interaction, textCode, customVariables = {}) => {
 
 	// Replace variables
 	const textToTranslate = languageFile[textCode];
-	const translated = replaceOnce(textToTranslate, Object.keys(mergedVariables), Object.values(mergedVariables), "gmi")
+	const translated = replaceOnce(textToTranslate, Object.keys(mergedVariables), Object.values(mergedVariables), 'gmi');
 	// Return translated string
 
 	return translated;

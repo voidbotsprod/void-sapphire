@@ -1,6 +1,5 @@
 import { Listener, container } from '@sapphire/framework';
 import { blue, gray, green, magenta, magentaBright, white, yellow, redBright, red } from 'colorette';
-import mysql from 'mysql2';
 import { DB } from '#lib/functions';
 
 const environmentType = process.env.NODE_ENV === 'DEVELOPMENT';
@@ -17,11 +16,11 @@ export class ReadyEvent extends Listener {
 	}
 
 	async run() {
-        try {
-            const startTime = Date.now()
-            for (const guild of global.client.guilds.cache) {
-                const lang = await DB(`SELECT * FROM guilds WHERE Id = ?`, [guild[0]]);
-                const languageId = await lang === undefined ? 1 : await lang.LanguageId;
+		try {
+			const startTime = Date.now();
+			for (const guild of global.client.guilds.cache) {
+				const lang = await DB(`SELECT * FROM guilds WHERE Id = ?`, [guild[0]]);
+				const languageId = (await lang) === undefined ? 1 : await lang.LanguageId;
 
 				global.guildLanguages.push({
 					guildId: guild[0],

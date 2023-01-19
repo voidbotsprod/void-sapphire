@@ -37,7 +37,6 @@ global.dbPool = pool.promise();
 global.guildLanguages = [];
 global.languageList = [];
 
-
 container.color = {
 	PASTEL_GREEN: 0x87de7f,
 	CHERRY_RED: 0x8e3741,

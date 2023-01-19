@@ -23,15 +23,15 @@ export class ReadyEvent extends Listener {
 		}, Time.Second * 10);
 		// Listen for worker messages
 		worker.on('message', (message) => {
-			if (!message.success) client.logger.error(`${red("Failed")} to cache board ${gray(message.path)}.`);
+			if (!message.success) client.logger.error(`${red('Failed')} to cache board ${gray(message.path)}.`);
 		});
 	}
 
 	async requestUpdate(worker) {
 		// Ask the worker to cache all boards
-		const board = await DB('SELECT * FROM boards', [], true)
-		const pixels = await DB('SELECT * FROM pixelplacements', [], true)
-		const colors = await DB('SELECT * FROM colors', [], true)
+		const board = await DB('SELECT * FROM boards', [], true);
+		const pixels = await DB('SELECT * FROM pixelplacements', [], true);
+		const colors = await DB('SELECT * FROM colors', [], true);
 
 		board[0].forEach(async (board) => {
 			const boardPixels = pixels[0].filter((pixel) => pixel.GuildId === board.GuildId && pixel.BoardId === board.Id);

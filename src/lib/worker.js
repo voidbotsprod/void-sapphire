@@ -50,7 +50,8 @@ parentPort.on('message', async (message) => {
 			const path = `${guildIdPath}/board.png`;
 			fs.writeFileSync(path, imageData);
 			parentPort.postMessage({ path: path, success: true });
-		} else { // If there are no changes, return the previous path
+		} else {
+			// If there are no changes, return the previous path
 			// if there were no changes, return the previous path
 			parentPort.postMessage({ path: `src/boardCache/${dirName}/board.png`, success: true });
 		}
