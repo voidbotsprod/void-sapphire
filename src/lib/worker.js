@@ -26,7 +26,6 @@ parentPort.on('message', async (message) => {
 		}
 		// If there are changes, create the canvas and write to file
 		if (changes) {
-			console.log('Changes detected')
 			// Create canvas
 			const canvas = createCanvas(msgBoard.SizeX, msgBoard.SizeY);
 			const ctx = canvas.getContext('2d');
@@ -52,7 +51,6 @@ parentPort.on('message', async (message) => {
 			fs.writeFileSync(path, imageData);
 			parentPort.postMessage({ path: path, success: true });
 		} else { // If there are no changes, return the previous path
-			console.log('No changes detected')
 			// if there were no changes, return the previous path
 			parentPort.postMessage({ path: `src/boardCache/${dirName}/board.png`, success: true });
 		}
