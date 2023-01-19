@@ -16,6 +16,8 @@ export class ReadyEvent extends Listener {
 	}
 
 	async run() {
+		//#region Ugly aah global vars
+		// Guild language cache
 		try {
 			const startTime = Date.now();
 			for (const guild of global.client.guilds.cache) {
@@ -32,13 +34,42 @@ export class ReadyEvent extends Listener {
 		} catch (error) {
 			console.log(error);
 		}
-
+		// Language list cache
 		try {
 			const [langQuery] = await DB(`SELECT * FROM languages`, [], true);
 			languageList = await langQuery;
 		} catch (error) {
 			console.log(error);
 		}
+		// Items cache
+		try {
+			const startTime = Date.now();
+			const [itemQuery] = await DB(`SELECT * FROM items`, [], true);
+			itemList = await itemQuery;
+			const endTime = Date.now();
+			this.container.client.logger.info(String.raw`Loaded ${green('items')} cache in ${green(endTime - startTime + 'ms')}.`.trim());
+		} catch (error) {
+			console.log(error);
+		}
+		// Colors cache
+		try {
+			const startTime = Date.now();
+			const [colorQuery] = await DB(`SELECT * FROM colors`, [], true);
+			colorList = await colorQuery;
+			const endTime = Date.now();
+			this.container.client.logger.info(String.raw`Loaded ${green('colors')} cache in ${green(endTime - startTime + 'ms')}.`.trim());
+		} catch (error) {
+			console.log(error);
+		}
+		// Rarity cache
+		try {
+			const [rarityQuery] = await DB(`SELECT * FROM rarities`, [], true);
+			rarityList = await rarityQuery;
+		} catch (error) {
+			console.log(error);
+		}
+		
+		//#endregion Ugly aah global vars
 
 		this.printBanner();
 		this.printStoreDebugInformation();

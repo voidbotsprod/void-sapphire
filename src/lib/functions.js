@@ -34,6 +34,50 @@ export function softWrap(input, length = 30) {
 }
 
 /**
+ * Check if a color is dark or light.
+ * @param {string} color Color to be checked (HEX, RGB or RGBA)
+ * @returns {object} Object containing the raw luminance value and the luminance type (dark or light)
+ */
+export function colorLuminance(color) {
+	let r, g, b;
+	if (color.startsWith('#')) {
+		// Hex color
+		r = parseInt(color.slice(1, 3), 16);
+		g = parseInt(color.slice(3, 5), 16);
+		b = parseInt(color.slice(5, 7), 16);
+	} else if (color.startsWith('rgb')) {
+		// RGB or RGBA color
+		const values = color.match(/\d+/g).map(Number);
+		r = values[0];
+		g = values[1];
+		b = values[2];
+	}
+	const amount = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+	const luminance = amount > 0.5 ? 'dark' : 'light';
+	return { amount: amount, luminance: luminance };
+}
+
+/**
+ * Inverts the colors of a canvas area.
+ * @param {any} ctx Canvas context
+ * @param {number} x X position
+ * @param {number} y Y position
+ * @param {number} width Width
+ * @param {number} height Height
+ * @returns Inverted area of the canvas
+ */
+export function invertCanvasColors(ctx, x, y, width, height) {
+	const imageData = ctx.getImageData(x, y, width, height);
+	const data = imageData.data;
+	for (let i = 0; i < data.length; i += 4) {
+		data[i] = 255 - data[i];
+		data[i + 1] = 255 - data[i + 1];
+		data[i + 2] = 255 - data[i + 2];
+	}
+	return ctx.putImageData(imageData, x, y);
+}
+
+/**
  * Capitalizes a given string.
  * @param {string} toCapitalize String to capitalize.
  * @return {string} capitalized string

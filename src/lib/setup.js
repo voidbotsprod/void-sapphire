@@ -36,6 +36,9 @@ const pool = mysql.createPool({
 global.dbPool = pool.promise();
 global.guildLanguages = [];
 global.languageList = [];
+global.itemList = [];
+global.colorList = [];
+global.rarityList = [];
 
 container.color = {
 	PASTEL_GREEN: 0x87de7f,
