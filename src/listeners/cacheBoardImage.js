@@ -32,6 +32,10 @@ export class ReadyEvent extends Listener {
 		const board = await DB('SELECT * FROM boards', [], true)
 		const pixels = await DB('SELECT * FROM pixelplacements', [], true)
 		const colors = await DB('SELECT * FROM colors', [], true)
-		board[0].forEach((board) => { worker.postMessage({ board: board, pixels: pixels, colors: colors }) })
+
+		board[0].forEach(async (board) => {
+			const boardPixels = pixels[0].filter((pixel) => pixel.GuildId === board.GuildId && pixel.BoardId === board.Id);
+			await worker.postMessage({ board: board, pixels: boardPixels, colors: colors });
+		});
 	}
 }

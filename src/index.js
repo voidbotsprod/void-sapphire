@@ -23,7 +23,7 @@ global.client = client;
 try {
 	client.logger.info('Logging in...');
 	await client.login();
-	client.logger.info(`Logged in as ${client.user.username} [${client.user.id}]`);
+	client.logger.info(`Logged in as ${green(client.user.username)} [${gray(client.user.id)}]`);
 } catch (error) {
 	client.logger.fatal(error);
 	client.destroy();
