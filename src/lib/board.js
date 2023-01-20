@@ -51,18 +51,20 @@ export default class Board {
 				this.createdAt,
 				expireAt
 			]);
+
 			board = await this.getBoard(await this.getBoardTypeIdFromDesc(), guildId, name, sizeX, sizeY);
 			board.existed = false;
 
-			client.logger.info(`Saved new board with type '${type}' from guild '${guildId}' with the size of ${sizeX}x${sizeY}, expires at ${expireAt ? expireAt : 'never'}`);
+			global.client.logger.info(`Saved new board with type '${type}' from guild '${guildId}' with the size of ${sizeX}x${sizeY}, expires at ${expireAt ? expireAt : 'never'}`);
 		} else {
 			board.existed = true;
-			client.logger.info(`Board already exists, creation cancelled.`);
+			global.client.logger.info(`Board already exists, creation cancelled.`);
 		}
 
 		return board;
 	}
 
+	// TODO: Remove unneccessary parameters like sizeX and sizeY
 	/**
 	 * Get board properties of the created board.
 	 * @returns {Promise<Board>}
@@ -74,8 +76,6 @@ export default class Board {
 	 */
 	async getBoard(boardType, guildId, name, sizeX, sizeY) {
 		const board = await DB(`SELECT * FROM boards WHERE boardTypeId = ? AND guildId = ? AND name = ? AND sizeX = ? AND sizeY = ?`, [boardType, guildId, name, sizeX, sizeY]);
-		if (!board) return null;
-
 		return board;
 	}
 
@@ -85,8 +85,6 @@ export default class Board {
 	 */
 	async getBoardTypeIdFromDesc() {
 		const type = await DB(`SELECT id FROM boardtypes WHERE typeDescription = ?`, [this.type]);
-		if (!type) return null;
-
 		return type.id;
 	}
 }

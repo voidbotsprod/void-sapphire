@@ -10,6 +10,6 @@ export class chatInputCommandDeniedEvent extends Listener {
 	}
 
 	async run(interaction) {
-		return client.logger.error(`Event cancelled: ${interaction}`);
+		return global.client.logger.error(`Event cancelled: ${interaction}`);
 	}
 }

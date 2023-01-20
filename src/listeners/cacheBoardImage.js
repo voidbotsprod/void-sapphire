@@ -23,7 +23,7 @@ export class ReadyEvent extends Listener {
 		}, Time.Second * 10);
 		// Listen for worker messages
 		worker.on('message', (message) => {
-			if (!message.success) client.logger.error(`${red('Failed')} to cache board ${gray(message.path)}.`);
+			if (!message.success) global.client.logger.error(`${red('Failed')} to cache board ${gray(message.path)}.`);
 		});
 	}
 

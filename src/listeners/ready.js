@@ -1,4 +1,4 @@
-import { Listener, container } from '@sapphire/framework';
+import { Listener } from '@sapphire/framework';
 import { blue, gray, green, magenta, magentaBright, white, yellow, redBright, red } from 'colorette';
 import { DB } from '#lib/functions';
 
@@ -30,7 +30,7 @@ export class ReadyEvent extends Listener {
 				});
 			}
 			const endTime = Date.now();
-			this.container.client.logger.info(String.raw`Loaded ${green('language')} cache in ${green(endTime - startTime + 'ms')}.`.trim());
+			global.client.logger.info(String.raw`Loaded ${green('language')} cache in ${green(endTime - startTime + 'ms')}.`.trim());
 		} catch (error) {
 			console.log(error);
 		}
@@ -47,7 +47,7 @@ export class ReadyEvent extends Listener {
 			const [itemQuery] = await DB(`SELECT * FROM items`, [], true);
 			itemList = await itemQuery;
 			const endTime = Date.now();
-			this.container.client.logger.info(String.raw`Loaded ${green('items')} cache in ${green(endTime - startTime + 'ms')}.`.trim());
+			global.client.logger.info(String.raw`Loaded ${green('items')} cache in ${green(endTime - startTime + 'ms')}.`.trim());
 		} catch (error) {
 			console.log(error);
 		}
@@ -57,7 +57,7 @@ export class ReadyEvent extends Listener {
 			const [colorQuery] = await DB(`SELECT * FROM colors`, [], true);
 			colorList = await colorQuery;
 			const endTime = Date.now();
-			this.container.client.logger.info(String.raw`Loaded ${green('colors')} cache in ${green(endTime - startTime + 'ms')}.`.trim());
+			global.client.logger.info(String.raw`Loaded ${green('colors')} cache in ${green(endTime - startTime + 'ms')}.`.trim());
 		} catch (error) {
 			console.log(error);
 		}
@@ -81,7 +81,7 @@ export class ReadyEvent extends Listener {
 	}
 
 	async printBanner() {
-		this.container.client.logger.info(
+		global.client.logger.info(
 			`[${green('+')}] Gateway online\n${environmentType ? `${blc('</>') + llc(` ${process.env.NODE_ENV} ENVIRONMENT`)}` : 'PRODUCTION ENVIRONMENT'}\n${llc(`v${process.env.VERSION}`)}`.trim()
 		);
 
@@ -91,7 +91,7 @@ export class ReadyEvent extends Listener {
 			.getConnection()
 			.then(() => connectionSuccess)
 			.catch(() => connectionFailure);
-		this.container.client.logger.info(statusString);
+		global.client.logger.info(statusString);
 	}
 
 	printStoreDebugInformation() {
@@ -99,9 +99,9 @@ export class ReadyEvent extends Listener {
 		const first = stores.shift();
 		const last = stores.pop();
 
-		this.container.client.logger.info(this.styleStore(first, '┌─'));
-		for (const store of stores) this.container.client.logger.info(this.styleStore(store, '├─'));
-		this.container.client.logger.info(this.styleStore(last, '└─'));
+		global.client.logger.info(this.styleStore(first, '┌─'));
+		for (const store of stores) global.client.logger.info(this.styleStore(store, '├─'));
+		global.client.logger.info(this.styleStore(last, '└─'));
 	}
 
 	/**
