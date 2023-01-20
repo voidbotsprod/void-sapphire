@@ -140,7 +140,7 @@ export class ProfileCommand extends Command {
 		contrast(ctx, 60, 90, 100, 100, 8.5);
 		// Username
 		const dcRGB = await getColor(interaction.user.displayAvatarURL({ extension: 'png', size: 256 }), 10);
-		const dcHEX = "#" + ((1 << 24) + (dcRGB[0] << 16) + (dcRGB[1] << 8) + dcRGB[2]).toString(16).slice(1);
+		const dcHEX = '#' + ((1 << 24) + (dcRGB[0] << 16) + (dcRGB[1] << 8) + dcRGB[2]).toString(16).slice(1);
 		ctx.font = '20px Minecraft';
 		const luminance = colorLuminance(dcHEX);
 		ctx.fillStyle = luminance.amount > 0.5 ? '#aeaeae' : '#1e1e1e';
@@ -164,7 +164,7 @@ export class ProfileCommand extends Command {
 	async drawTitleBar(ctx, currentLevel, Coins, Xp, base) {
 		// Level icon and text
 		const levelIcon = await loadImage('src/lib/images/profile/gui/levelIcon.png');
-		const canvasIsExtremelyDumb = `${currentLevel}`
+		const canvasIsExtremelyDumb = `${currentLevel}`;
 		ctx.drawImage(levelIcon, 210, 22, 19, 19);
 		ctx.font = '16px Minecraft';
 		ctx.fillStyle = '#FFFFFF';
