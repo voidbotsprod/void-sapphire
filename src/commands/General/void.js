@@ -1,8 +1,9 @@
 import { Command, CommandOptionsRunTypeEnum } from '@sapphire/framework';
 import { capitalize } from '#lib/functions';
-import { EmbedBuilder } from 'discord.js';
+import { EmbedBuilder, strikethrough } from 'discord.js';
 import languagePassthrough from '#lib/functions';
-import getBoard from '#lib/board';
+import Board from '#lib/board';
+import { stripIndent } from 'common-tags';
 
 export class voidCommand extends Command {
 	constructor(context, options) {
@@ -17,7 +18,12 @@ export class voidCommand extends Command {
 	registerApplicationCommands(registry) {
 		registry.registerChatInputCommand(
 			(builder) => {
-				builder.setName(this.name).setDescription(this.description);
+				builder
+					.setName(this.name)
+					.setDescription(this.description)
+					.addIntegerOption((option) => option.setName('x').setDescription('The x coordinate of the pixel.').setRequired(false))
+					.addIntegerOption((option) => option.setName('y').setDescription('The y coordinate of the pixel.').setRequired(false))
+					.addStringOption((option) => option.setName('color').setDescription('The color of the pixel.').setRequired(false));
 			},
 			{
 				guildIds: ['975124858298040451'] // guilds for the command to be registered in; global if empty
@@ -27,95 +33,29 @@ export class voidCommand extends Command {
 	}
 
 	async chatInputRun(interaction) {
-		// send board, attach buttons
-		let board = await getBoard(interaction, 'void', interaction.guild.id, interaction.guild.name, 15, 15, 0);
+		const x = interaction.options.getInteger('x');
+		const y = interaction.options.getInteger('y');
+		const color = interaction.options.getString('color');
 
-		const embed = new EmbedBuilder()
-			.setColor('RANDOM')
-			.setTitle(languagePassthrough(interaction, 'void.title', { '%GUILD_NAME%': interaction.guild.name })) // Board for %GUILD_NAME%
-			.setImage(board);
+		const board = await Board.getById(19);
 
-		const buttons = [
-			{
-				type: 2,
-				style: 1,
-				label: capitalize(languagePassthrough(interaction, 'void.buttons.left_15')), // <- 15
-				customId: 'left_15'
-			},
-			{
-				type: 2,
-				style: 1,
-				label: capitalize(languagePassthrough(interaction, 'void.buttons.left_5')), // <- 5
-				customId: 'left_5'
-			},
-			{
-				type: 2,
-				style: 1,
-				label: capitalize(languagePassthrough(interaction, 'void.buttons.left_1')), // <- 1
-				customId: 'left_1'
-			},
-			{
-				type: 2,
-				style: 1,
-				label: capitalize(languagePassthrough(interaction, 'void.buttons.place_pixel')), // Place Pixel
-				customId: 'place_pixel'
-			},
-			{
-				type: 2,
-				style: 1,
-				label: capitalize(languagePassthrough(interaction, 'void.buttons.right_1')), // 1 ->
-				customId: 'right_1'
-			},
-			{
-				type: 2,
-				style: 1,
-				label: capitalize(languagePassthrough(interaction, 'void.buttons.right_5')), // 5 ->
-				customId: 'right_5'
-			},
-			{
-				type: 2,
-				style: 1,
-				label: capitalize(languagePassthrough(interaction, 'void.buttons.right_15')), // 15 ->
-				customId: 'right_15'
-			}
-		];
+		if (x && y && color) return this.placePixel(interaction, board, x, y, color);
+		if (x && y) return this.showBoard(interaction, board, x, y);
+		return this.showBoard(interaction, board);
+	}
 
-		await interaction.reply({ embeds: [embed], components: [{ type: 1, components: buttons }] });
+	async placePixel(interaction, board, x, y, color) {
+		const pixel = await board.placePixel(x, y, color, interaction.user.id);
+		if (!pixel) return interaction.reply("You can't place a pixel out of bounds. Try again!");
+		return this.showBoard(interaction, board, x, y);
+	}
 
-		// wait for button click
-		const filter = (i) => i.user.id === interaction.user.id;
-		const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
+	async showBoard(interaction, board, x = 0, y = 0) {
+		let attachment = await board.getImage();
 
-		collector.on('collect', async (i) => {
-			switch (i.customId) {
-				case 'left_15':
-					// move board left 15
-					break;
-				case 'left_5':
-					// move board left 5
-					break;
-				case 'left_1':
-					// move board left 1
-					break;
-				case 'right_1':
-					// move board right 1
-					break;
-				case 'right_5':
-					// move board right 5
-					break;
-				case 'right_15':
-					// move board right 15
-					break;
-				case 'place_pixel':
-					// place pixel
-					break;
-			}
-		});
-
-		collector.on('end', async (collected) => {
-			if (collected.size === 0) {
-				await interaction.editReply({ content: 'Timed out.', components: [] });
-			}
+		return interaction.reply({
+			content: stripIndent`**${board.name}** (${board.sizeX}x${board.sizeY})`,
+			files: [attachment]
 		});
 	}
 }
