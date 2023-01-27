@@ -6,7 +6,8 @@
 	"main": "src/index.js",
 	"scripts": {
 		"dev": "nodemon -L --watch src",
-		"start": "node src/index.js"
+		"start": "node src/index.js",
+		"profile": "node --inspect src/index.js"
 	},
 	"author": "BluePotatoBP, Xavons, JBTech",
 	"license": "GNU3",
