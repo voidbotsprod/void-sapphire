@@ -1,5 +1,5 @@
 import { Command } from '@sapphire/framework';
-import { createCanvas, loadImage } from '@napi-rs/canvas';
+import { createCanvas, loadImage } from 'canvas';
 import { AttachmentBuilder } from 'discord.js';
 import { drawInventory, drawCanvasLine, hexToGrayscale, invertHexColor, cutTo, contrast, colorLuminance, drawFrame, DB } from '#lib/functions';
 import { getPalette } from '#lib/color-thief-node';

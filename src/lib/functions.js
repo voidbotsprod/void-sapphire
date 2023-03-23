@@ -3,7 +3,7 @@ import { container } from '@sapphire/framework';
 import { EmbedBuilder } from 'discord.js';
 import { isNullish, isNullishOrZero } from '@sapphire/utilities';
 import { default as DEFAULT_VARIABLES } from './languageVariables.js';
-import { loadImage } from '@napi-rs/canvas';
+import { loadImage } from 'canvas';
 import fs from 'fs/promises';
 import replaceOnce from 'replace-once';
 
