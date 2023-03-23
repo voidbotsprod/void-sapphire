@@ -68,17 +68,13 @@ export default class Board {
 
 		// check if out of bounds
 		if (x > this.sizeX || y > this.sizeY) {
-			console.log(`out of bounds`);
 			return false;
 		}
 
-		// if pixel exists, update it
 		if (pixel) {
-			console.log(`update`);
 			await DB(`UPDATE pixelplacements SET ColorId = ?, userId = ? WHERE id = ?`, [color, userId, pixel.Id]);
 			return true;
-		} else { // if pixel doesn't exist, create it
-			console.log(`create`);
+		} else {
 			await DB(`INSERT INTO pixelplacements (boardId, userId, guildId, xPosition, yPosition, color, placedAt) VALUES (?, ?, ?, ?, ?, ?, now())`, [this.id, userId, this.guildId, x, y, color]);
 			return true;
 		}
@@ -97,16 +93,24 @@ export default class Board {
 			ctx.fillRect(pixel.XPosition * 100 - 100, pixel.YPosition * 100 - 100, 100, 100);
 		}
 
-		let attachment = canvas.toBuffer();
+		return canvas.toBuffer();
+	}
 
-		return {
-			attachment: attachment,
-			name: 'board.png'
-		};
+	static async getColors() {
+		let colors = [];
+		const colorData = await dbPool.execute(`SELECT * FROM colors`).then((data) => data[0]);
+		
+		for (let i = 0; i < colorData.length; i++) {
+			colors.push(colorData[i].Name);
+		}
+		
+		console.log(colors);
+
+		return colors;
 	}
 
 	// fills the board with random pixels
-	async test(sizeX, sizeY) {
+	async fillRandom(sizeX, sizeY) {
 		await dbPool.execute(`delete from pixelplacements where boardId = 19`);
 
 		let colorData = await dbPool.execute(`select * from colors`);

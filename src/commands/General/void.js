@@ -23,7 +23,22 @@ export class voidCommand extends Command {
 					.setDescription(this.description)
 					.addIntegerOption((option) => option.setName('x').setDescription('The x coordinate of the pixel.').setRequired(false))
 					.addIntegerOption((option) => option.setName('y').setDescription('The y coordinate of the pixel.').setRequired(false))
-					.addStringOption((option) => option.setName('color').setDescription('The color of the pixel.').setRequired(false));
+					.addStringOption((option) => {
+						option.setName('color').setDescription('The color of the pixel.').setRequired(false);
+
+						const colors = {
+							1: 'Black',
+							2: 'White',
+							3: 'Red',
+							4: 'Light Blue'
+						};
+
+						for (const [id, name] of Object.entries(colors)) {
+							option.addChoices({ name: name, value: id });
+						}
+
+						return option;
+					});
 			},
 			{
 				guildIds: ['975124858298040451'] // guilds for the command to be registered in; global if empty
@@ -36,6 +51,8 @@ export class voidCommand extends Command {
 		const x = interaction.options.getInteger('x');
 		const y = interaction.options.getInteger('y');
 		const color = interaction.options.getString('color');
+
+		console.log(x, y, color);
 
 		const board = await Board.getById(19);
 
@@ -51,11 +68,14 @@ export class voidCommand extends Command {
 	}
 
 	async showBoard(interaction, board, x = 0, y = 0) {
-		let attachment = await board.getImage();
-
 		return interaction.reply({
 			content: stripIndent`**${board.name}** (${board.sizeX}x${board.sizeY})`,
-			files: [attachment]
+			files: [
+				{
+					attachment: await board.getImage(),
+					name: 'board.png'
+				}
+			]
 		});
 	}
 }

@@ -5,7 +5,7 @@ import { Time } from '@sapphire/time-utilities';
 import { blue, gray, green, magenta, magentaBright, white, yellow, redBright, red } from 'colorette';
 
 const client = new SapphireClient({
-	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers],
+	intents: [GatewayIntentBits.Guilds],
 	defaultCooldown: {
 		delay: Time.Second * 10,
 		limit: 2,
