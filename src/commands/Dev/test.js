@@ -27,8 +27,8 @@ export class TestCommand extends Command {
 
 	async chatInputRun(interaction) {
 		const board = await Board.getByName(interaction.guild.id, 'Test 4');
-		
-		await board.test(board.sizeX, board.sizeY);
+
+		// await board.fillRandom(board.sizeX, board.sizeY);
 
 		return interaction.reply({
 			content: stripIndents`
@@ -41,7 +41,12 @@ export class TestCommand extends Command {
 			Size: \`${board.sizeX}x${board.sizeY}\`
 			Created At: \`${board.createdAt}\`
 			Expires At: \`${board.expireAt ? board.ExpireAt : 'Never'}\``,
-			files: [await board.getImage()]
+			files: [
+				{
+					attachment: await board.getImage(),
+					name: 'board.png'
+				}
+			]
 		});
 
 		// const TestBoard = new Board();
