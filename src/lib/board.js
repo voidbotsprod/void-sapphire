@@ -1,5 +1,5 @@
 import { DB } from '#lib/functions';
-import { createCanvas, loadImage } from '@napi-rs/canvas';
+import { createCanvas, loadImage } from 'canvas';
 
 export default class Board {
 	constructor(id, type, guildId, name, description, sizeX, sizeY, createdAt, expireAt) {
