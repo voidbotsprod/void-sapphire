@@ -32,6 +32,7 @@
 		"discord.js": "^14.7.1",
 		"dotenv": "^16.0.1",
 		"get-pixels": "^3.3.3",
+		"humanize-duration": "^3.28.0",
 		"lru-cache": "^7.14.1",
 		"moment": "^2.29.4",
 		"mysql2": "^2.3.3",
