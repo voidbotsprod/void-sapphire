@@ -26,7 +26,7 @@ export class Inventory extends Command {
 			},
 			{
 				guildIds: ['975124858298040451'], // guilds for the command to be registered in; global if empty
-				idHints: '1068164678318051469' // commandId, define after registering (id will be in log after first run)
+				idHints: process.env.NODE_ENV === 'PRODUCTION' ? null : '1088563875701592225'
 			}
 		);
 	}
