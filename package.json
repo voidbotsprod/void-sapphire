@@ -6,7 +6,8 @@
 	"main": "src/index.js",
 	"scripts": {
 		"dev": "nodemon -L --watch src",
-		"start": "node src/index.js"
+		"start": "node src/index.js",
+		"profile": "node --inspect src/index.js"
 	},
 	"author": "BluePotatoBP, Xavons, JBTech",
 	"license": "GNU3",
@@ -25,7 +26,6 @@
 		"@sapphire/plugin-subcommands": "^4.0.0",
 		"@sapphire/time-utilities": "^1.7.8",
 		"approximate-number": "^2.1.0",
-		"canvas": "^2.11.0",
 		"common-tags": "^1.8.2",
 		"discord-api-types": "^0.37.27",
 		"discord.js": "^14.7.1",

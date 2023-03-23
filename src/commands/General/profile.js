@@ -1,8 +1,8 @@
 import { Command } from '@sapphire/framework';
 import { createCanvas, loadImage } from '@napi-rs/canvas';
 import { AttachmentBuilder } from 'discord.js';
-import { cutTo, contrast, DB, colorLuminance } from '#lib/functions';
-import { getColor } from '#lib/color-thief-node';
+import { cutTo, contrast, DB, invertHexColor, hexToGrayscale, drawInventory, drawCanvasLine, drawFrame, colorLuminance } from '#lib/functions';
+import { getPalette } from '#lib/color-thief-node';
 import { request } from 'undici';
 import approx from 'approximate-number';
 
@@ -19,7 +19,10 @@ export class ProfileCommand extends Command {
 	registerApplicationCommands(registry) {
 		registry.registerChatInputCommand(
 			(builder) => {
-				builder.setName(this.name).setDescription(this.description);
+				builder
+					.setName(this.name)
+					.setDescription(this.description)
+					.addUserOption((option) => option.setName('target').setDescription('User whos profile should be checked.'));
 			},
 			{
 				guildIds: ['975124858298040451'], // guilds for the command to be registered in; global if empty
@@ -29,6 +32,10 @@ export class ProfileCommand extends Command {
 	}
 
 	async chatInputRun(interaction) {
+		let providedUser;
+		if (interaction.options.getUser('target')) providedUser = interaction.options.getUser('target');
+		else providedUser = interaction.user;
+
 		try {
 			// Create canvas
 			const canvas = createCanvas(700, 250);
@@ -38,7 +45,9 @@ export class ProfileCommand extends Command {
 			ctx.textDrawingMode = 'glyph';
 			ctx.imageSmoothingEnabled = false;
 			// Define stuff for later
-			const { Id, Coins, Xp } = await DB(`SELECT * FROM users WHERE id = ?`, [interaction.user.id]);
+			const userData = await DB(`SELECT * FROM users WHERE Id = ?`, [providedUser.id]);
+			const Coins = userData === undefined ? 0 : userData.Coins;
+			const Xp = userData === undefined ? 0 : userData.Xp;
 			let currentLevel = Math.floor(Xp / 5000) + 1;
 			// Draw background and load base image
 			ctx.fillStyle = '#2C2F33';
@@ -46,16 +55,16 @@ export class ProfileCommand extends Command {
 			const base = await loadImage('src/lib/images/profile/border/base_transparent.png');
 			ctx.drawImage(base, 0, 0, canvas.width, canvas.height);
 			// Top line
-			this.drawLine(ctx, 20, 50, base.width - 20, 50, '#36373D', 0.5);
+			drawCanvasLine(ctx, 20, 50, base.width - 20, 50, '#36373D', 0.5);
 			// Far left line
-			this.drawLine(ctx, 20, 20, 20, 230, '#36373D', 0.5);
+			drawCanvasLine(ctx, 20, 20, 20, 230, '#36373D', 0.5);
 			// Middle left "Crossing" line
-			this.drawLine(ctx, 200, 20, 200, 230, '#36373D', 0.5);
+			drawCanvasLine(ctx, 200, 20, 200, 230, '#36373D', 0.5);
 			// Middle right "Crossing" line
-			this.drawLine(ctx, 437, 50, 437, 230, '#36373D', 0.5);
+			drawCanvasLine(ctx, 437, 50, 437, 230, '#36373D', 0.5);
 			// Draw elements
-			await this.drawPlayerCard(ctx, interaction, currentLevel);
-			await this.drawInventory(ctx, interaction);
+			await this.drawPlayerCard(ctx, interaction, currentLevel, providedUser);
+			await drawInventory(ctx, providedUser.id, 3, 4, 15, 15, 43, 210, 60, 10, 20, 53, 8);
 			await this.drawTitleBar(ctx, currentLevel, Coins, Xp, base);
 			await this.drawStats(ctx);
 			// Creating a new message attachment
@@ -67,61 +76,7 @@ export class ProfileCommand extends Command {
 		}
 	}
 
-	async drawInventory(ctx, interaction) {
-		try {
-			const [items] = await DB('SELECT * FROM useritems WHERE UserId = ?', [interaction.user.id], true);
-			// Drawing inventory slots in a grid
-			const slotImage = await loadImage('src/lib/images/profile/gui/inventorySlot.png');
-			const slotRows = 3; // Rows are horizontal
-			const slotColumns = 4; // Columns are vertical
-			const slotGap = 15;
-			const slotSize = 43;
-			// Draw slots
-			for (let i = 0; i < slotRows * slotColumns; i++) {
-				const x = 209 + (i % slotColumns) * (slotSize + slotGap);
-				const y = 59 + Math.floor(i / slotColumns) * (slotSize + slotGap);
-				ctx.drawImage(slotImage, x, y, slotSize, slotSize);
-			}
-			// Draw items
-			if (items) {
-				for (let i = 0; i < Math.min(items.length, 12); i++) {
-					if (i > 12) return;
-					// Set draw location
-					const x = 210 + (i % slotColumns) * (slotSize + slotGap);
-					const y = 60 + Math.floor(i / slotColumns) * (slotSize + slotGap);
-					const currentItem = itemList.find((item) => item.Id === items[i].ItemTypeId);
-					const itemTexture = await loadImage(`src/lib/images/items/${currentItem.Name}.png`).catch(() => {});
-					const fallbackTexture = await loadImage(`src/lib/images/items/default.png`);
-					const item = itemTexture !== undefined ? itemTexture : fallbackTexture;
-					ctx.drawImage(item, x, y, slotSize - 2, slotSize - 2);
-					const rarity = rarityList.find((rarity) => rarity.Id === currentItem.Rarity);
-					const colorValue = colorList.find((color) => color.Id === rarity.ColorId).Value;
-					// Draw item name under slot
-					ctx.font = '10px Minecraft';
-					const luminance = colorLuminance(colorValue);
-					ctx.fillStyle = luminance.amount > 0.5 ? '#aeaeae' : '#1e1e1e';
-					ctx.textAlign = 'center';
-					ctx.fillText(cutTo(currentItem.DecoName, 0, 8, true), x + 20, y + 54);
-					ctx.fillStyle = colorValue;
-					ctx.fillText(cutTo(currentItem.DecoName, 0, 8, true), x + 21, y + 53);
-				}
-			}
-		} catch (error) {
-			console.log(error);
-		}
-	}
-
-	async drawPlayerCard(ctx, interaction, currentLevel) {
-		const baseFramesURL = 'src/lib/images/profile/avatarBorder/';
-		const frames = {
-			50: '1_frame_rookie.png',
-			100: '2_frame_recruit.png',
-			150: '3_frame_scout.png',
-			200: '4_frame_knight.png',
-			250: '5_frame_king.png',
-			300: '6_frame_emperor.png',
-			350: '7_frame_overlord.png'
-		};
+	async drawPlayerCard(ctx, interaction, currentLevel, providedUser) {
 		// Define gradient
 		const lightGrayGradient = ctx.createLinearGradient(0, 20, 0, 40);
 		lightGrayGradient.addColorStop(0.0, 'white');
@@ -134,31 +89,26 @@ export class ProfileCommand extends Command {
 		ctx.fillStyle = lightGrayGradient;
 		ctx.fillText(cutTo(interaction.guild.name, 0, 13, true), 111, 39);
 		// Avatar
-		const { body } = await request(interaction.user.displayAvatarURL({ extension: 'png', size: 256 }));
+		const { body } = await request(providedUser.displayAvatarURL({ extension: 'png', size: 256 }));
 		const avatar = await loadImage(await body.arrayBuffer());
 		ctx.drawImage(avatar, 60, 90, 100, 100);
 		contrast(ctx, 60, 90, 100, 100, 8.5);
+		// Frame
+		await drawFrame(ctx, currentLevel, 60, 90, 100, 100);
 		// Username
-		const dcRGB = await getColor(interaction.user.displayAvatarURL({ extension: 'png', size: 256 }), 10);
-		const dcHEX = '#' + ((1 << 24) + (dcRGB[0] << 16) + (dcRGB[1] << 8) + dcRGB[2]).toString(16).slice(1);
-		ctx.font = '20px Minecraft';
-		const luminance = colorLuminance(dcHEX);
-		ctx.fillStyle = luminance.amount > 0.5 ? '#aeaeae' : '#1e1e1e';
-		ctx.fillText(cutTo(interaction.user.username, 0, 13, true), 109, 76);
-		ctx.fillStyle = dcHEX;
-		ctx.textAlign = 'center';
-		ctx.fillText(cutTo(interaction.user.username, 0, 13, true), 110, 75);
-		// Frame around avatar
-		let fitsWithinLevel;
-		for (const [level] of Object.entries(frames)) {
-			if (currentLevel < level) {
-				fitsWithinLevel = level;
-				break;
-			}
+		let hexArray = [];
+		const RGBPalette = await getPalette(providedUser.displayAvatarURL({ extension: 'png', size: 256 }), 10, 3);
+		for (const color of RGBPalette) {
+			const hex = '#' + ((1 << 24) + (color[0] << 16) + (color[1] << 8) + color[2]).toString(16).slice(1);
+			hexArray.push(hex);
 		}
-
-		const frame = await loadImage(baseFramesURL + frames[fitsWithinLevel]);
-		ctx.drawImage(frame, 60, 90, 100, 100);
+		const lightestColor = hexArray.sort((c) => colorLuminance(c).value < 0.5).shift();
+		ctx.font = '20px Minecraft';
+		ctx.fillStyle = invertHexColor(hexToGrayscale(lightestColor));
+		ctx.fillText(cutTo(providedUser.username, 0, 13, true), 109, 76);
+		ctx.fillStyle = lightestColor;
+		ctx.textAlign = 'center';
+		ctx.fillText(cutTo(providedUser.username, 0, 13, true), 110, 75);
 	}
 
 	async drawTitleBar(ctx, currentLevel, Coins, Xp, base) {
@@ -207,18 +157,5 @@ export class ProfileCommand extends Command {
 		ctx.fillText(cutTo(`More detailed explanation of something or other.`, 0, 40), 457, 93);
 		ctx.fillText(cutTo(`More detailed explanation of something or other.`, 0, 40), 457, 140);
 		ctx.fillText(cutTo(`More detailed explanation of something or other.`, 0, 40), 457, 187);
-	}
-
-	drawLine(ctx, x1, y1, x2, y2, color, width) {
-		try {
-			ctx.strokeStyle = color;
-			ctx.lineWidth = width;
-			ctx.beginPath();
-			ctx.moveTo(x1, y1);
-			ctx.lineTo(x2, y2);
-			ctx.stroke();
-		} catch (error) {
-			console.log(error);
-		}
 	}
 }
