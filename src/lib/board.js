@@ -15,12 +15,12 @@ export default class Board {
 	}
 
 	static async create(type, guildId, name, description, sizeX, sizeY, expireAt) {
-		let board = new Board(data.Id, type, guildId, name, description, sizeX, sizeY, Math.floor(Date.now() / 1000), expireAt);
+		let board = new Board(type, guildId, name, description, sizeX, sizeY, Math.floor(Date.now() / 1000), expireAt);
 
 		if (board.exists()) {
 			return null;
 		} else {
-			await DB(`INSERT INTO boards (boardTypeId, guildId, name, description, sizeX, sizeY, createdAt, expireAt) VALUES (?, ?, ?, ?, ?, ?, now(), ?)`, [
+			await DB(`INSERT INTO boards (boardTypeId, guildId, name, description, sizeX, sizeY, createdAt, expireAt) VALUES ("2", ?, ?, ?, ?, ?, now(), ?)`, [
 				type,
 				guildId,
 				name,
