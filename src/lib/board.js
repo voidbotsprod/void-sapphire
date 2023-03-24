@@ -2,8 +2,7 @@ import { DB } from '#lib/functions';
 import { createCanvas, loadImage } from 'canvas';
 
 export default class Board {
-	constructor(id, type, guildId, name, description, sizeX, sizeY, createdAt, expireAt) {
-		this.id = id;
+	constructor(type, guildId, name, description, sizeX, sizeY, createdAt, expireAt) {
 		this.type = type;
 		this.guildId = guildId;
 		this.name = name;
@@ -15,22 +14,21 @@ export default class Board {
 	}
 
 	static async create(type, guildId, name, description, sizeX, sizeY, expireAt) {
-		let board = new Board(type, guildId, name, description, sizeX, sizeY, Math.floor(Date.now() / 1000), expireAt);
+		const board = new Board(type, guildId, name, description, sizeX, sizeY, Math.floor(Date.now() / 1000), expireAt);
+		if (await board.exists()) return null;
 
-		if (board.exists()) {
-			return null;
-		} else {
-			await DB(`INSERT INTO boards (boardTypeId, guildId, name, description, sizeX, sizeY, createdAt, expireAt) VALUES ("2", ?, ?, ?, ?, ?, now(), ?)`, [
-				type,
-				guildId,
-				name,
-				description,
-				sizeX,
-				sizeY,
-				expireAt
-			]);
-			global.client.logger.info(`Saved new board with type '${type}' from guild '${guildId}' with the size of ${sizeX}x${sizeY}, expires ${expireAt ? 'at ' + expireAt : 'never'}`);
-		}
+		await DB(`INSERT INTO boards (boardTypeId, guildId, name, description, sizeX, sizeY, createdAt, expireAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [
+			type,
+			guildId,
+			name,
+			description,
+			sizeX,
+			sizeY,
+			Date.now(),
+			expireAt
+		]);
+
+		global.client.logger.info(`Saved new board with type '${type}' from guild '${guildId}' with the size of ${sizeX}x${sizeY}, expires ${expireAt ? 'at ' + expireAt : 'never'}`);
 
 		return board;
 	}
@@ -58,7 +56,9 @@ export default class Board {
 
 	async exists() {
 		const data = await DB(`SELECT * FROM boards WHERE guildId = ? AND name = ?`, [this.guildId, this.name]);
-		return data ? true : false;
+		if (await data === undefined) return false;
+
+		return true;
 	}
 
 	// @tim: replace true/false with error codes
@@ -99,11 +99,11 @@ export default class Board {
 	static async getColors() {
 		let colors = [];
 		const colorData = await dbPool.execute(`SELECT * FROM colors`).then((data) => data[0]);
-		
+
 		for (let i = 0; i < colorData.length; i++) {
 			colors.push(colorData[i].Name);
 		}
-		
+
 		console.log(colors);
 
 		return colors;
