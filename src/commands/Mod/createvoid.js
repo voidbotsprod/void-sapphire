@@ -1,8 +1,8 @@
-import { Command } from '@sapphire/framework';
-import { stripIndents } from 'common-tags';
+import { Command, container } from '@sapphire/framework';
 import Board from '#lib/board';
 import parse from 'parse-duration';
-/* import { DB } from '#lib/functions'; */
+import { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import languagePassthrough from '#lib/languagePassthrough';
 
 export class CreateVoid extends Command {
 	constructor(context, options) {
@@ -26,9 +26,9 @@ export class CreateVoid extends Command {
 						option.setName('size').setDescription('The size of your VOID.').setRequired(true);
 
 						const sizes = {
-							1: 'Small (20x20px)',
-							2: 'Normal (48x48px)',
-							3: 'Large (84x84px)',
+							1: 'Small (21x21px)',
+							2: 'Medium (44x44px)',
+							3: 'Large (88x88px)',
 							4: 'XL (120x120px)',
 							5: 'VIP - XXL (192x192px)',
 							6: 'VIP - XXXL (240x240px)'
@@ -40,7 +40,7 @@ export class CreateVoid extends Command {
 
 						return option;
 					})
-					.addStringOption((option) => option.setName('expires').setDescription('VOID expiration time, 0 for none. (1h/d/w/y)').setRequired(false))
+					.addStringOption((option) => option.setName('expires').setDescription('VOID expiration time. (1h/d/w/y)').setRequired(false))
 			},
 			{
 				guildIds: ['975124858298040451'], // guilds for the command to be registered in; global if empty
@@ -51,9 +51,9 @@ export class CreateVoid extends Command {
 
 	async chatInputRun(interaction) {
 		const sizePresets = {
-			1: 20,
-			2: 48,
-			3: 84,
+			1: 21,
+			2: 44,
+			3: 88,
 			4: 120,
 			5: 192,
 			6: 240
@@ -64,16 +64,46 @@ export class CreateVoid extends Command {
 		const size = interaction.options.getString('size');
 		const expiration = interaction.options.getString('expires');
 
-		const board = await Board.create(2, interaction.guild.id, name, desc, sizePresets[size], sizePresets[size], (expiration === 0 ? null : Date.now() + parse(expiration)));
-		if(board === null) return interaction.reply({ content: 'A board with this name already exists in your guild, please choose a different name.'});
+		/* for(let i = 1; i <= Object.entries(sizePresets).length; i++) {
+			console.log(this.calcQuads(sizePresets[i]) + " " + sizePresets[i]);
+		} */
 
-		return interaction.reply({
-			content: stripIndents`
-			**Created Board info:**
-			Name: \`${name}\`
-			Description: \`${desc}\`
-			Size: \`${size}\`
-			Expires At: \`${expiration}\``,
+		const board = await Board.create(2, interaction.guild.id, name, desc, sizePresets[size], sizePresets[size], (expiration == "0" || expiration == null ? null : Date.now() + parse(expiration)));
+		if (board === null) return interaction.reply({ content: 'A board with this name already exists in your guild, please choose a different name.' });
+
+		const quadOptions = this.calcQuads(sizePresets[size]);
+
+		const row = new ActionRowBuilder();
+		for (let i = 0; i < quadOptions.length; i++) {
+			row.addComponents(
+				new ButtonBuilder()
+					.setCustomId(quadOptions[i] + "quads")
+					.setLabel(quadOptions[i].toString())
+					.setStyle(ButtonStyle.Secondary)
+			);
+		}
+
+		const quadSelectEmbed = interaction.reply({
+			embeds: [
+				new EmbedBuilder()
+					.setColor(container.color.BLURPLE_CLASSIC)
+					.setDescription("How many quadrants do you want your board to have?")
+					.setFooter({ text: interaction.user.tag, iconUrl: interaction.user.avatarURL() })
+					.setTimestamp()
+			],
+			components: [row]
 		});
+		// TODO: update db to have a quads field and then additionally move the board creation line to down here
+		
+	}
+
+	calcQuads(number) {
+		if (number % 2 == 0 && number % 4 == 0 && number % 6 == 0) {
+			return [2, 4, 6]
+		} else if (number % 2 == 0 && number % 4 == 0) {
+			return [2, 4]
+		} else {
+			return [1, 2]
+		}
 	}
 }
