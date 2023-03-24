@@ -50,7 +50,6 @@ export class CreateVoid extends Command {
 	}
 
 	async chatInputRun(interaction) {
-		// (type, guildId, name, description, sizeX, sizeY, expireAt) {
 		const sizePresets = {
 			1: 20,
 			2: 48,
@@ -65,8 +64,8 @@ export class CreateVoid extends Command {
 		const size = interaction.options.getString('size');
 		const expiration = interaction.options.getString('expires');
 
-		const board = await Board.create("2", interaction.guild.id, name, desc, sizePresets[size], sizePresets[size], Date.now() + (expiration === 0 ? 0 : parse(expiration)));
-		console.log(board);
+		const board = await Board.create(2, interaction.guild.id, name, desc, sizePresets[size], sizePresets[size], (expiration === 0 ? null : Date.now() + parse(expiration)));
+		if(board === null) return interaction.reply({ content: 'A board with this name already exists in your guild, please choose a different name.'});
 
 		return interaction.reply({
 			content: stripIndents`
