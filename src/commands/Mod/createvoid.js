@@ -64,40 +64,65 @@ export class CreateVoid extends Command {
 		const size = interaction.options.getString('size');
 		const expiration = interaction.options.getString('expires');
 
-		/* for(let i = 1; i <= Object.entries(sizePresets).length; i++) {
-			console.log(this.calcQuads(sizePresets[i]) + " " + sizePresets[i]);
-		} */
-
-		const board = await Board.create(2, interaction.guild.id, name, desc, sizePresets[size], sizePresets[size], (expiration == "0" || expiration == null ? null : Date.now() + parse(expiration)));
-		if (board === null) return interaction.reply({ content: 'A board with this name already exists in your guild, please choose a different name.' });
-
+		// Get the appropriate quad size for the board size
 		const quadOptions = this.calcQuads(sizePresets[size]);
-
+		// Assemble buttons depending on the amount of quads
 		const row = new ActionRowBuilder();
 		for (let i = 0; i < quadOptions.length; i++) {
 			row.addComponents(
 				new ButtonBuilder()
-					.setCustomId(quadOptions[i] + "quads")
+					.setCustomId("quad" + quadOptions[i])
 					.setLabel(quadOptions[i].toString())
 					.setStyle(ButtonStyle.Secondary)
 			);
 		}
-
-		const quadSelectEmbed = interaction.reply({
+		// Initial reply
+		await interaction.reply({
 			embeds: [
 				new EmbedBuilder()
 					.setColor(container.color.BLURPLE_CLASSIC)
-					.setDescription("How many quadrants do you want your board to have?")
+					.setDescription("How many quadrants do you want your board to have?\n<Insert better explanation here>")
 					.setFooter({ text: interaction.user.tag, iconUrl: interaction.user.avatarURL() })
 					.setTimestamp()
 			],
 			components: [row]
 		});
-		// TODO: update db to have a quads field and then additionally move the board creation line to down here
-		
+		// Button collection
+		const filter = i => i.customId.startsWith('quad') && i.user.id === interaction.user.id;
+		const btnCollector = interaction.channel.createMessageComponentCollector({ filter, time: 30_000 });
+		// Create the board and send confirmation
+		btnCollector.on('collect', async i => {
+			// Get selected quad
+			const quadCount = parseInt(i.customId.replace('quad', ''));
+			// Attempt to create a board with complete info
+			const board = await Board.create(2, interaction.guild.id, name, desc, sizePresets[size], sizePresets[size], (expiration == "0" || expiration == null ? null : Date.now() + parse(expiration)), quadCount);
+			/**
+			 * TODO: move this check somewhere above, so it checks the name before sending the quad embed
+			 */
+			if (board === null) return interaction.editReply({ content: 'A board with this name already exists in your guild, please choose a different name.' });
+			// Update the interaction and stop collector
+			await i.update({ 
+				embeds: [
+					new EmbedBuilder()
+						.setColor(container.color.PASTEL_GREEN)
+						.setTitle("Congrats! You successfully created a new VOID.")
+						.addFields(
+							{ name: "Name", value: board.name },
+							{ name: "Description", value: board.description },
+							{ name: "Size", value: board.sizeX },
+							{ name: "Expires", value: board.expireAt },
+							{ name: "Quadrants", value: board.quads }
+						)
+						.setFooter({ text: interaction.user.tag, iconUrl: interaction.user.avatarURL() })
+						.setTimestamp()
+				], components: [] 
+			});
+			btnCollector.stop();
+		});
 	}
 
 	calcQuads(number) {
+		// I couldnt think of a better way to determine quad sizes
 		if (number % 2 == 0 && number % 4 == 0 && number % 6 == 0) {
 			return [2, 4, 6]
 		} else if (number % 2 == 0 && number % 4 == 0) {
