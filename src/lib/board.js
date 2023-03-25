@@ -2,7 +2,7 @@ import { DB } from '#lib/functions';
 import { createCanvas, loadImage } from 'canvas';
 
 export default class Board {
-	constructor(type, guildId, name, description, sizeX, sizeY, createdAt, expireAt) {
+	constructor(type, guildId, name, description, sizeX, sizeY, createdAt, expireAt, quads) {
 		this.type = type;
 		this.guildId = guildId;
 		this.name = name;
@@ -11,13 +11,14 @@ export default class Board {
 		this.sizeY = sizeY;
 		this.createdAt = createdAt;
 		this.expireAt = expireAt;
+		this.quads = quads;
 	}
 
-	static async create(type, guildId, name, description, sizeX, sizeY, expireAt) {
-		const board = new Board(type, guildId, name, description, sizeX, sizeY, Math.floor(Date.now() / 1000), expireAt);
+	static async create(type, guildId, name, description, sizeX, sizeY, expireAt, quads) {
+		const board = new Board(type, guildId, name, description, sizeX, sizeY, Math.floor(Date.now() / 1000), expireAt, quads);
 		if (await board.exists()) return null;
 
-		await DB(`INSERT INTO boards (boardTypeId, guildId, name, description, sizeX, sizeY, createdAt, expireAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [
+		await DB(`INSERT INTO boards (boardTypeId, guildId, name, description, sizeX, sizeY, createdAt, expireAt, quads) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, [
 			type,
 			guildId,
 			name,
@@ -25,7 +26,8 @@ export default class Board {
 			sizeX,
 			sizeY,
 			Date.now(),
-			expireAt
+			expireAt,
+			quads
 		]);
 
 		global.client.logger.info(`Saved new board with type '${type}' from guild '${guildId}' with the size of ${sizeX}x${sizeY}, expires ${expireAt ? 'at ' + expireAt : 'never'}`);
@@ -37,7 +39,7 @@ export default class Board {
 		const data = await DB(`SELECT * FROM boards WHERE boardTypeId = ? AND guildId = ? AND name = ? AND sizeX = ? AND sizeY = ?`, [boardType, guildId, name, sizeX, sizeY]);
 
 		if (data) {
-			return new Board(data.Id, data.BoardTypeId, data.GuildId, data.Name, data.Description, data.SizeX, data.SizeY, data.CreatedAt, data.ExpireAt);
+			return new Board(data.Id, data.BoardTypeId, data.GuildId, data.Name, data.Description, data.SizeX, data.SizeY, data.CreatedAt, data.ExpireAt, data.Quads);
 		} else {
 			return null;
 		}
@@ -46,12 +48,12 @@ export default class Board {
 	static async getByName(guildId, name) {
 		const data = await DB(`SELECT * FROM boards WHERE guildId = ? AND name = ?`, [guildId, name]);
 
-		return new Board(data.Id, data.BoardTypeId, data.GuildId, data.Name, data.Description, data.SizeX, data.SizeY, data.CreatedAt, data.ExpireAt);
+		return new Board(data.Id, data.BoardTypeId, data.GuildId, data.Name, data.Description, data.SizeX, data.SizeY, data.CreatedAt, data.ExpireAt, data.Quads);
 	}
 
 	static async getById(id) {
 		const data = await DB(`SELECT * FROM boards WHERE id = ?`, [id]);
-		return new Board(data.Id, data.BoardTypeId, data.GuildId, data.Name, data.Description, data.SizeX, data.SizeY, data.CreatedAt, data.ExpireAt);
+		return new Board(data.Id, data.BoardTypeId, data.GuildId, data.Name, data.Description, data.SizeX, data.SizeY, data.CreatedAt, data.ExpireAt, data.Quads);
 	}
 
 	async exists() {
@@ -81,7 +83,7 @@ export default class Board {
 	}
 
 	async getImage() {
-		const pixels = await await dbPool.execute(`SELECT * FROM pixelplacements WHERE boardId = ?`, [this.id]);
+		const pixels = await await DB(`SELECT * FROM pixelplacements WHERE boardId = ?`, [this.id]);
 
 		const canvas = createCanvas(this.sizeX * 100, this.sizeY * 100);
 		const ctx = canvas.getContext('2d');
@@ -98,7 +100,7 @@ export default class Board {
 
 	static async getColors() {
 		let colors = [];
-		const colorData = await dbPool.execute(`SELECT * FROM colors`).then((data) => data[0]);
+		const colorData = await DB(`SELECT * FROM colors`).then((data) => data[0]);
 
 		for (let i = 0; i < colorData.length; i++) {
 			colors.push(colorData[i].Name);
@@ -111,9 +113,9 @@ export default class Board {
 
 	// fills the board with random pixels
 	async fillRandom(sizeX, sizeY) {
-		await dbPool.execute(`delete from pixelplacements where boardId = 19`);
+		await DB(`delete from pixelplacements where boardId = 19`);
 
-		let colorData = await dbPool.execute(`select * from colors`);
+		let colorData = await DB(`select * from colors`);
 		let colors = [];
 		for (let i = 0; i < colorData[0].length; i++) {
 			colors.push(colorData[0][i].Id);
@@ -125,7 +127,7 @@ export default class Board {
 		for (let i = 1; i <= iterations; i++) {
 			for (let j = 1; j <= iterations; j++) {
 				console.log('test:', i, j);
-				await dbPool.execute(`insert into pixelplacements (boardId, userId, guildId, xPosition, yPosition, colorId, placedAt) values (19, '1', 975124858298040451, ?, ?, ?, now())`, [
+				await DB(`insert into pixelplacements (boardId, userId, guildId, xPosition, yPosition, colorId, placedAt) values (19, '1', 975124858298040451, ?, ?, ?, now())`, [
 					i,
 					j,
 					colors[Math.floor(Math.random() * colors.length)]
